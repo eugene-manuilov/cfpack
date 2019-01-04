@@ -25,6 +25,7 @@ class BuildTask extends Task {
 		this.saveFinalTemplate();
 
 		this.log(`Template has been created and saved as ${this.outputArtifacts.templateFile}`);
+		this.info('');
 	}
 
 	findTemplates() {
