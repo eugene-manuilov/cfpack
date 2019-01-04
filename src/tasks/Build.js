@@ -3,6 +3,7 @@ const path = require('path');
 const yaml = require('js-yaml');
 
 const Task = require('../Task');
+const intrinsicFunctions = require('../utils/intrinsic-functions-schema');
 
 class BuildTask extends Task {
 
@@ -54,8 +55,6 @@ class BuildTask extends Task {
 				return;
 			}
 
-			console.log(doc);
-
 			Object.keys(doc).forEach((group) => {
 				if (typeof doc[group] === 'object') {
 					if (doc[group].constructor.name === 'Date') {
@@ -81,7 +80,7 @@ class BuildTask extends Task {
 	processTemplate(file) {
 		try {
 			const content = fs.readFileSync(file, 'utf8');
-			const doc = yaml.safeLoad(content);
+			const doc = yaml.safeLoad(content, { schema: intrinsicFunctions });
 
 			this.info(`├─ Processed ${file} template...`);
 
