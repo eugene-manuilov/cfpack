@@ -1,0 +1,19 @@
+{
+	"name": "cfpack",
+	"version": "1.0.0",
+	"description": "",
+	"author": "Eugene Manuilov <eugene.manuilov@gmail.com>",
+	"license": "MIT",
+	"main": "index.js",
+	"homepage": "https://github.com/eugene-manuilov/cfpack#readme",
+	"bugs": {
+		"url": "https://github.com/eugene-manuilov/cfpack/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/eugene-manuilov/cfpack.git"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	}
+}
