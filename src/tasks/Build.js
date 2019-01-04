@@ -1,5 +1,7 @@
+const os = require('os');
 const fs = require('fs');
 const path = require('path');
+
 const yaml = require('js-yaml');
 
 const Task = require('../Task');
@@ -20,6 +22,9 @@ class BuildTask extends Task {
 		this.processTemplates();
 
 		this.info(`└─ Building final template...`);
+		this.saveFinalTemplate();
+
+		this.log(`Template has been created and saved as ${this.outputArtifacts.templateFile}`);
 	}
 
 	findTemplates() {
@@ -91,6 +96,17 @@ class BuildTask extends Task {
 		}
 
 		return false;
+	}
+
+	saveFinalTemplate() {
+		const prefix = path.join(os.tmpdir(), 'cfpack-');
+		const folder = fs.mkdtempSync(prefix);
+
+		const filename = path.join(folder, 'template.json');
+		const data = JSON.stringify(this.outputArtifacts.template, '', 4);
+
+		fs.writeFileSync(filename, data, { encoding: 'utf8' });
+		this.outputArtifacts.templateFile = filename;
 	}
 
 }
