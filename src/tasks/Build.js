@@ -12,7 +12,7 @@ class BuildTask extends Task {
 	run() {
 		this.log('Build template file...');
 
-		this.info(`├─ Looking for templates in the ${this.options.folder} folder...`);
+		this.info(`├─ Looking for templates in the ${this.options.entry} folder...`);
 		this.findTemplates();
 		if (this.outputArtifacts.files.length === 0) {
 			return;
@@ -28,7 +28,7 @@ class BuildTask extends Task {
 	}
 
 	findTemplates() {
-		const files = this.walkTemplates(this.options.folder, []);
+		const files = this.walkTemplates(this.options.entry, []);
 		if (files.length > 0) {
 			this.info(`├─ Found ${files.length} template(s)...`);
 		} else {
@@ -99,12 +99,14 @@ class BuildTask extends Task {
 	}
 
 	saveFinalTemplate() {
-		const prefix = path.join(os.tmpdir(), 'cfpack-');
-		const folder = fs.mkdtempSync(prefix);
+		let filename = this.options.output;
+		if (!filename) {
+			const prefix = path.join(os.tmpdir(), 'cfpack-');
+			const folder = fs.mkdtempSync(prefix);
+			filename = path.join(folder, 'template.json');
+		}
 
-		const filename = path.join(folder, 'template.json');
 		const data = JSON.stringify(this.outputArtifacts.template, '', 4);
-
 		fs.writeFileSync(filename, data, { encoding: 'utf8' });
 		this.outputArtifacts.templateFile = filename;
 	}
