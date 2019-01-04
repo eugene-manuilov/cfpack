@@ -36,6 +36,12 @@ class Task {
 		}
 	}
 
+	warning(message) {
+		if (!this.options.silent && this.options.verbose) {
+			process.stdout.write(chalk.yellow(`${message}\n`));
+		}
+	}
+
 }
 
 module.exports = Task;

@@ -1,7 +1,15 @@
+const path = require('path');
+
 class Runner {
 
 	constructor(args) {
-		this.args = args;
+		const configPath = path.isAbsolute(args.config)
+			? args.config
+			: path.resolve(process.cwd(), args.config);
+
+		const config = require(configPath);
+		this.args = Object.assign({}, config, args);
+
 		this.tasks = [];
 	}
 
