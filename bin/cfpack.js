@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
+const path = require('path');
 const yargs = require('yargs');
 
 function dispatch(args) {
-	require(`./commands/${args['_'].join('')}`)(args);
+	const commandPath = path.resolve(__dirname, '../commands/', args['_'][0]);
+	const command = require(commandPath);
+	
+	command(args);
 }
 
 yargs.options({

@@ -1,7 +1,7 @@
 {
 	"name": "cfpack",
-	"version": "1.0.0",
-	"description": "",
+	"version": "0.1.0-dev",
+	"description": "A CLI tool that helps to build CloudFormation template using multiple smaller templates.",
 	"author": "Eugene Manuilov <eugene.manuilov@gmail.com>",
 	"license": "MIT",
 	"main": "index.js",
@@ -17,6 +17,18 @@
 	"engines": {
 		"node": ">=6.11.5"
 	},
+	"keywords": [
+		"aws",
+		"cloudformation",
+		"cf"
+	],
+	"files": [
+		"*.md",
+		"LICENSE",
+		"bin/",
+		"commands/",
+		"src/"
+	],
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
