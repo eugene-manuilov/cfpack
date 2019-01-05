@@ -34,6 +34,10 @@ class BuildTask extends Task {
 			? entry
 			: path.resolve(process.cwd(), entry);
 
+		if (!fs.existsSync(entryPath)) {
+			this.log.error('The entry folder is not found.');
+		}
+
 		const files = this.walkTemplates(entryPath, []);
 		if (files.length > 0) {
 			this.log.info(`├─ Found ${files.length} template(s)...`);
@@ -119,6 +123,10 @@ class BuildTask extends Task {
 			const folder = fs.mkdtempSync(prefix);
 			filename = path.join(folder, 'template.json');
 		}
+
+		filename = path.isAbsolute(filename)
+			? filename
+			: path.resolve(process.cwd(), filename);
 
 		const data = JSON.stringify(this.outputArtifacts.template, '', 4);
 		fs.writeFileSync(filename, data, { encoding: 'utf8' });
