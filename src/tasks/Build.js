@@ -29,7 +29,12 @@ class BuildTask extends Task {
 	}
 
 	findTemplates() {
-		const files = this.walkTemplates(this.options.entry, []);
+		const { entry } = this.options;
+		const entryPath = path.isAbsolute(entry)
+			? entry
+			: path.resolve(process.cwd(), entry);
+
+		const files = this.walkTemplates(entryPath, []);
 		if (files.length > 0) {
 			this.log.info(`├─ Found ${files.length} template(s)...`);
 		} else {
