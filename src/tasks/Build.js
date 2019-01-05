@@ -10,30 +10,30 @@ const intrinsicFunctions = require('../utils/intrinsic-functions-schema');
 class BuildTask extends Task {
 
 	run() {
-		this.log('Build template file...');
+		this.log.message('Build template file...');
 
-		this.info(`├─ Looking for templates in the ${this.options.entry} folder...`);
+		this.log.info(`├─ Looking for templates in the ${this.options.entry} folder...`);
 		this.findTemplates();
 		if (this.outputArtifacts.files.length === 0) {
 			return;
 		}
 
-		this.info(`├─ Processing found templates...`);
+		this.log.info(`├─ Processing found templates...`);
 		this.processTemplates();
 
-		this.info(`└─ Building final template...`);
+		this.log.info(`└─ Building final template...`);
 		this.saveFinalTemplate();
 
-		this.log(`Template has been created and saved as ${this.outputArtifacts.templateFile}`);
+		this.log.message(`Template has been created and saved as ${this.outputArtifacts.templateFile}`);
 		this.info('');
 	}
 
 	findTemplates() {
 		const files = this.walkTemplates(this.options.entry, []);
 		if (files.length > 0) {
-			this.info(`├─ Found ${files.length} template(s)...`);
+			this.log.info(`├─ Found ${files.length} template(s)...`);
 		} else {
-			this.info('└─ Found no templates in the folder...');
+			this.log.info('└─ Found no templates in the folder...');
 		}
 
 		this.outputArtifacts.files = files;
@@ -96,12 +96,12 @@ class BuildTask extends Task {
 		try {
 			const doc = yaml.safeLoad(content, { schema: intrinsicFunctions });
 
-			this.info(`├─ Processed ${file} template...`);
+			this.log.info(`├─ Processed ${file} template...`);
 
 			return doc;
 		} catch (e) {
 			const error = e.toString().split('\n').join('\n│  ');
-			this.info(`├─ Error processing ${file} template: ${error}`);
+			this.log.info(`├─ Error processing ${file} template: ${error}`);
 		}
 
 		return false;

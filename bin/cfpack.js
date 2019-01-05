@@ -26,6 +26,7 @@ yargs.options({
 	}
 });
 
+yargs.command('init', 'Initializes cfpack config in the current directory.', {}, dispatch);
 yargs.command('build', 'Assembles templates into one CloudFormation template.', {}, dispatch);
 yargs.command('deploy', 'Assembles and deploys CloudFormation template.', {}, dispatch);
 

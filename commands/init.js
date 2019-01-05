@@ -1,11 +1,10 @@
 const Runner = require('../src/Runner');
-const BuildTask = require('../src/tasks/Build');
+const InitTask = require('../src/tasks/Init');
 
 module.exports = function(args) {
 	const runner = new Runner(args);
-	const build = new BuildTask();
+	const task = new InitTask();
 	
-	runner.loadConfig();
-	runner.chain([build]);
+	runner.chain([task]);
 	runner.execute();
 };

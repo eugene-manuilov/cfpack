@@ -1,11 +1,10 @@
 const AWS = require('aws-sdk');
-
 const Task = require('../Task');
 
 class DeployTask extends Task {
 
 	run() {
-		this.log('Deploying template file...');
+		this.log.message('Deploying template file...');
 
 		const { stack } = this.options;
 		this.cloudformation = new AWS.CloudFormation({
@@ -13,7 +12,7 @@ class DeployTask extends Task {
 			region: stack.region,
 		});
 
-		this.info(`├─ Checking whether ${stack.name} stack exists...`);
+		this.log.info(`├─ Checking whether ${stack.name} stack exists...`);
 		this.cloudformation.describeStacks({ StackName: stack.name }, (err) => {
 			if (err) {
 				this.createStack();
@@ -24,7 +23,7 @@ class DeployTask extends Task {
 	}
 
 	createStack() {
-		this.info(`└─ Stack doesn't exist. Creating a new one...`);
+		this.log.info(`└─ Stack doesn't exist. Creating a new one...`);
 
 		const { stack } = this.options;
 		const params = Object.assign({}, stack.params, { 
@@ -36,8 +35,8 @@ class DeployTask extends Task {
 			if (err) {
 				throw new Error(err);
 			} else {
-				this.log('Stack has been created...');
-				this.info(JSON.stringify(data, '', 4));
+				this.log.message('Stack has been created...');
+				this.log.info(JSON.stringify(data, '', 4));
 			}
 		});
 	}
@@ -55,8 +54,8 @@ class DeployTask extends Task {
 			if (err) {
 				throw new Error(err);
 			} else {
-				this.log('Stack has been updated...');
-				this.info(JSON.stringify(data, '', 4));
+				this.log.message('Stack has been updated...');
+				this.log.info(JSON.stringify(data, '', 4));
 			}
 		});
 	}

@@ -12,6 +12,10 @@ class Task {
 		this.options = options;
 	}
 
+	setLogger(log) {
+		this.log = log;
+	}
+
 	setInputArtifacts(artifacts) {
 		this.inputArtifacts = artifacts;
 	}
@@ -22,24 +26,6 @@ class Task {
 
 	run() {
 		throw new Error('The run method is not implemented.');
-	}
-
-	log(message) {
-		if (!this.options.silent) {
-			process.stdout.write(chalk.green(`${message}\n`));
-		}
-	}
-
-	info(message) {
-		if (!this.options.silent && this.options.verbose) {
-			process.stdout.write(chalk.white(`${message}\n`));
-		}
-	}
-
-	warning(message) {
-		if (!this.options.silent && this.options.verbose) {
-			process.stdout.write(chalk.yellow(`${message}\n`));
-		}
 	}
 
 }
