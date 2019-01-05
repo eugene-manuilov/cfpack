@@ -1,6 +1,6 @@
 {
 	"name": "cfpack.js",
-	"version": "0.2.0-dev",
+	"version": "0.3.0",
 	"description": "A CLI tool that helps to build CloudFormation template using multiple smaller templates.",
 	"author": "Eugene Manuilov <eugene.manuilov@gmail.com>",
 	"license": "MIT",

@@ -1,3 +1,74 @@
-# Cfpack
+# cfpack
 
-Work in progress...
+A small CLI tool that can help you to deal with huge CloudFormation templates by splitting it into multiple smaller templates. Using this tool you can also build sharable drop-in templates that you can share across your projects.
+
+> Note: this project is in its early stages and may lack some functionality or may have some bugs. Please, create a new issue if you find something. It will help to make this tool better.
+
+## Installation
+
+Install the package as global dependency to be able to use with different projects:
+
+```
+npm i -g cfpack.js
+```
+
+You can also install it as a project dependency and add NPM scripts if you need it for a specific project or you want to run it during CI/CD process. Just run the following command:
+
+```
+npm i cfpack.js --save-dev
+```
+
+Then you can create shortcuts in your `package.json` file:
+
+```
+{
+	"name": "my-project",
+	...
+	"scripts": {
+		"stack:build": "cfpack build",
+		"stack:deploy: "cfpack deploy",
+		"stack:delete": "cfpack delete"
+	},
+	...
+}
+```
+
+## Getting Started
+
+Before you start using this tool, you need to create a configuration file in the root of your project. Just run `cfpack init` command and it will create `cfpack.config.js` file with default settings. The file is pretty obvisous and specifies a folder with template files, a path to resulting template, CloudFormation stack information and the like. Just amend values if you need to change something and it will use what you want.
+
+You may also need to make sure that you have AWS credentials on your machine. The easiest way to do it is to install AWS CLI tool on your machine and run `aws configure` command to enter access key id and secret access key. It will be used by AWS Node.js SDK to work with CloudFormation stacks when you deploy it or want to delete it.
+
+## Build Templates
+
+Once everything is ready, you can split your original CloudFormation template into multiple smaller templates and put it into the entry folder. For example, if you have a template that declares CodeBuild, CodePipeline, S3 Bucket, AWS Lambda, DynamoDb tables and appropriate IAM resources, then you can create the following templates in the entry folder and split resoruces between them:
+
+- `build.yaml` - will contain CodeBuild and CodePipeline resources
+- `compute.yaml` - will contain AWS Lambda resources
+- `database.yaml` - will contain DynamoDb tables
+- `storage.yaml` - will contain S3 buckets
+- `roles.yaml` - will contain IAM roles and policies
+
+If you have parameters, outputs, metadata, mappings and/or conditions in your original template, then it also can be split between different templates. Just use your judment to deside what should be where.
+
+Just keep in mind that whenever you create a "sub-template", it has to adhere the standard formating and be valid from CloudFormation point of view.
+
+## Commands
+
+The package provides four commands: `init`, `build`, `deploy` and `delete`. These commands are pretty much self explanatory, but let's take a look at each of them.
+
+The `init` command is intended to initialize configuration file in the current working directory. Just run `cfpack init` and a new `cfpack.config.js` file will be create in the folder. Please, pay attention that it will override existing one if you have already created it.
+
+The `build` command will loop through the entry folder, find all files in it, read temlates and compose the final template which will be saved at a location specified in the config file. The command understands both json and yaml templates, and uses JSON format for the final template.
+
+The `deploy` command executes build task first to create resulting template and then use it to create or update CloudFormation stack using AWS Node.js SDK. The command checks whether or not a stack exists to determine what action is required to create or to update the stack.
+
+Finally, the `delete` command just checks if the stack exists and then calls API to delete it.
+
+## Contribute
+
+Want to help or have a suggestion? Open a [new ticket](https://github.com/eugene-manuilov/cfpack/issues/new) and we can discuss it or submit pull request.
+
+## LICENSE
+
+The MIT License (MIT)
