@@ -84,8 +84,16 @@ class BuildTask extends Task {
 	}
 
 	processTemplate(file) {
+		const content = fs.readFileSync(file, 'utf8');
+
 		try {
-			const content = fs.readFileSync(file, 'utf8');
+			const doc = JSON.parse(content);
+			return doc;
+		} catch(e) {
+			// do nothing
+		}
+
+		try {
 			const doc = yaml.safeLoad(content, { schema: intrinsicFunctions });
 
 			this.info(`├─ Processed ${file} template...`);
