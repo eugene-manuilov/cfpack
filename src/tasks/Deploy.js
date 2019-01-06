@@ -42,7 +42,7 @@ class DeployTask extends Task {
 	}
 
 	updateStack() {
-		this.info(`└─ Stack exists, updating...`);
+		this.log.info(`└─ Stack exists, updating...`);
 
 		const { stack } = this.options;
 		const params = Object.assign({}, stack.params, { 
