@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const yaml = require('js-yaml');
+const chalk = require('chalk');
 
 const Task = require('../Task');
 const intrinsicFunctions = require('../utils/intrinsic-functions-schema');
@@ -21,11 +22,8 @@ class BuildTask extends Task {
 		this.log.info(`├─ Processing found templates...`);
 		this.processTemplates();
 
-		this.log.info(`└─ Building final template...`);
 		this.saveFinalTemplate();
-
-		this.log.message(`Template has been created and saved as ${this.outputArtifacts.templateFile}`);
-		this.log.info('');
+		this.log.info(`└─ Final template: ${chalk.magenta(this.outputArtifacts.templateFile)}`);
 	}
 
 	findTemplates() {

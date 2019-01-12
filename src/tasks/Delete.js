@@ -1,4 +1,6 @@
 const AWS = require('aws-sdk');
+const chalk = require('chalk');
+
 const Task = require('../Task');
 
 class DeleteTask extends Task {
@@ -9,23 +11,31 @@ class DeleteTask extends Task {
 		const { stack } = this.options;
 		const params = { StackName: stack.name };
 
-		const cloudformation = new AWS.CloudFormation({
+		this.cloudformation = new AWS.CloudFormation({
 			apiVersion: '2010-05-15',
 			region: stack.region,
 		});
 
 		this.log.info(`├─ Checking whether ${stack.name} stack exists...`);
-		cloudformation.describeStacks(params, (err) => {
+		this.cloudformation.describeStacks(params, (err) => {
 			if (err) {
-				this.log.error('└─ Stack doesn\'t exist...');
+				this.log.error(`└─ ${err.code}: ${err.message}`);
 			} else {
-				cloudformation.deleteStack(params, (err, data) => {
-					if (err) {
-						this.log.error(err);
-					} else {
-						this.log.message('└─ Stack has been deleted...');
-					}
-				});
+				this.deleteStack();
+			}
+		});
+	}
+
+	deleteStack() {
+		const { stack } = this.options;
+		const params = { StackName: stack.name };
+
+		this.cloudformation.deleteStack(params, (err, data) => {
+			if (err) {
+				this.log.error(`${err.code}: ${err.message}`);
+			} else {
+				this.log.info('├─ Stack has been deleted...');
+				this.log.info(`└─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}`);
 			}
 		});
 	}
