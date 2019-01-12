@@ -1,4 +1,6 @@
 const AWS = require('aws-sdk');
+const chalk = require('chalk');
+
 const Task = require('../Task');
 
 class DeployTask extends Task {
@@ -23,7 +25,7 @@ class DeployTask extends Task {
 	}
 
 	createStack() {
-		this.log.info(`└─ Stack doesn't exist. Creating a new one...`);
+		this.log.info(`└─ Stack doesn't exist. Creating a new one...\n`);
 
 		const { stack } = this.options;
 		const params = Object.assign({}, stack.params, { 
@@ -31,18 +33,11 @@ class DeployTask extends Task {
 			TemplateBody: JSON.stringify(this.inputArtifacts.template),
 		});
 
-		this.cloudformation.createStack(params, (err, data) => {
-			if (err) {
-				throw new Error(err);
-			} else {
-				this.log.message('Stack has been created...');
-				this.log.info(JSON.stringify(data, '', 4));
-			}
-		});
+		this.cloudformation.createStack(params, this.getStackRequestCallback('Stack has been created...'));
 	}
 
 	updateStack() {
-		this.log.info(`└─ Stack exists, updating...`);
+		this.log.info(`└─ Stack exists, updating...\n`);
 
 		const { stack } = this.options;
 		const params = Object.assign({}, stack.params, { 
@@ -50,14 +45,21 @@ class DeployTask extends Task {
 			TemplateBody: JSON.stringify(this.inputArtifacts.template),
 		});
 
-		this.cloudformation.updateStack(params, (err, data) => {
+		this.cloudformation.updateStack(params, this.getStackRequestCallback('Stack has been updated...'));
+	}
+
+	getStackRequestCallback(message) {
+		return (err, data) => {
 			if (err) {
-				throw new Error(err);
+				this.log.error(`${err.code}: ${err.message}`, false);
+				this.log.info(`└─ RequestId: ${chalk.magenta(err.requestId)}`);
+				process.exit(1);
 			} else {
-				this.log.message('Stack has been updated...');
-				this.log.info(JSON.stringify(data, '', 4));
+				this.log.message(message);
+				this.log.info(`├─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}`);
+				this.log.info(`└─ StackId: ${chalk.magenta(data.StackId)}`);
 			}
-		});
+		};
 	}
 
 }

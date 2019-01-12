@@ -25,9 +25,11 @@ class Logger {
 		}
 	}
 
-	error(message) {
+	error(message, exit = true) {
 		process.stderr.write(chalk.red(`${message}\n`));
-		process.exit(1);
+		if (exit) {
+			process.exit(1);
+		}
 	}
 
 }
