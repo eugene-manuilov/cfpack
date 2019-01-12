@@ -42,7 +42,7 @@ class DeleteTask extends ApiTask {
 				this.log.info(`└─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}\n`);
 
 				this.startPollingEvents(this.stackId);
-				this.cloudformation.waitFor('stackDeleteComplete', params, () => {
+				this.cloudformation.waitFor('stackDeleteComplete', { StackName: this.stackId }, () => {
 					this.stopPollingEvents();
 					this.log.message('Stack has been deleted.');
 				});

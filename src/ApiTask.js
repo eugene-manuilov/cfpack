@@ -44,13 +44,16 @@ class ApiTask extends Task {
 		if (ClientRequestToken === this.taskUUID && !this.events[EventId]) {
 			this.events[EventId] = true;
 
+			let resource = (LogicalResourceId || '').padEnd(30, ' ');
 			let status = (ResourceStatus || '').padEnd(50, ' ');
+
 			switch (ResourceStatus) {
 				case 'CREATE_COMPLETE':
 				case 'UPDATE_COMPLETE':
 				case 'DELETE_COMPLETE':
 				case 'UPDATE_ROLLBACK_COMPLETE':
 					status = chalk.green.bold(status);
+					resource = chalk.green.bold(resource);
 					break;
 				case 'CREATE_FAILED':
 				case 'UPDATE_FAILED':
@@ -59,6 +62,7 @@ class ApiTask extends Task {
 				case 'UPDATE_ROLLBACK_IN_PROGRESS':
 				case 'ROLLBACK_FAILED':
 					status = chalk.red.bold(status);
+					resource = chalk.red.bold(resource);
 					break;
 				default:
 					status = chalk.gray.bold(status);
@@ -67,7 +71,7 @@ class ApiTask extends Task {
 
 			const message = [
 				`[${ApiTask.getDateTime(Timestamp)}]`,
-				(LogicalResourceId || '').padEnd(30, ' '),
+				resource,
 				status,
 				ResourceStatusReason || chalk.gray('—'),
 			];
