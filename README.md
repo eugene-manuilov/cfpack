@@ -57,13 +57,104 @@ Just keep in mind that whenever you create a "sub-template", it has to adhere th
 
 The package provides four commands: `init`, `build`, `deploy` and `delete`. These commands are pretty much self explanatory, but let's take a look at each of them.
 
+#### Init
+
 The `init` command is intended to initialize configuration file in the current working directory. Just run `cfpack init` and a new `cfpack.config.js` file will be create in the folder. Please, pay attention that it will override existing one if you have already created it.
+
+### Build
 
 The `build` command will loop through the entry folder, find all files in it, read temlates and compose the final template which will be saved at a location specified in the config file. The command understands both json and yaml templates, and uses JSON format for the final template.
 
+#### Deploy
+
 The `deploy` command executes build task first to create resulting template and then use it to create or update CloudFormation stack using AWS Node.js SDK. The command checks whether or not a stack exists to determine what action is required to create or to update the stack.
 
+#### Delete
+
 Finally, the `delete` command just checks if the stack exists and then calls API to delete it.
+
+## Config file
+
+#### Parameters
+
+As it has been said above, the config file is pretty obvious and self explanatory. It allows you to define your stack information and provide additional details like parameters or capabilities. Thus if your template uses input parameters, you can define them in the config file in the `stack` > `params` section as shown below:
+
+```
+module.exports = {
+    ...
+    stack: {
+        name: "my-stack",
+        region: "us-east-1",
+        params: {
+            ...
+            Parameters: [
+                {
+                    ParameterKey: 'key1',
+                    ParameterValue: 'valueA'
+                },
+                {
+                    ParameterKey: 'key2',
+                    ParameterValue: 'valueB'
+                }
+            ]
+        }
+    }
+};
+```
+
+If your parameters contain sensetive data and you can't commit it into your repository, then you can consider using environment vairables and [dotenv](https://www.npmjs.com/package/dotenv) package to load it. Install it, create `.env` file and define values that you want to use. Then update your `cfpack.config.js` file.
+
+```
+# .env file
+KEY1_VALUE=valueA
+KEY2_VALUE=valueB
+```
+
+```
+// cfpack.conifg.js
+
+require('dotenv').config();
+
+module.exports = {
+    ...
+    stack: {
+        name: "my-stack",
+        region: "us-east-1",
+        params: {
+            ...
+            Parameters: [
+                {
+                    ParameterKey: 'key1',
+                    ParameterValue: process.env.KEY1_VALUE
+                },
+                {
+                    ParameterKey: 'key2',
+                    ParameterValue: process.env.KEY2_VALUE
+                }
+            ]
+        }
+    }
+};
+```
+
+#### IAM roles
+
+Please, pay attention that if your CloudFormation template contains IAM roles or policies you must explicity acknowledge that it contains certain capabilities in order for AWS CloudFormation to create or update the stack. To do it, just add `Capabilities` to your config file as shown below:
+
+```
+module.exports = {
+    ...
+    stack: {
+        name: "my-stack",
+        region: "us-east-1",
+        params: {
+            ...
+            Capabilities: ['CAPABILITY_IAM'],
+            ...
+        }
+    }
+};
+```
 
 ## Contribute
 
