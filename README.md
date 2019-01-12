@@ -61,7 +61,7 @@ The package provides four commands: `init`, `build`, `deploy` and `delete`. Thes
 
 The `init` command is intended to initialize configuration file in the current working directory. Just run `cfpack init` and a new `cfpack.config.js` file will be create in the folder. Please, pay attention that it will override existing one if you have already created it.
 
-### Build
+#### Build
 
 The `build` command will loop through the entry folder, find all files in it, read temlates and compose the final template which will be saved at a location specified in the config file. The command understands both json and yaml templates, and uses JSON format for the final template.
 
