@@ -18,8 +18,21 @@ class Init extends Task {
 		name: "my-stack", // stack name
 		region: "us-east-1", // stack region
 		params: {
-			// extra parameters that can be used by API, see details here:
-			// https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudFormation.html#createStack-property
+			/**
+			 * Extra parameters that can be used by API
+			 * @see: https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudFormation.html#createStack-property
+			 */
+
+			/* uncomment if your CloudFormation template creates IAM roles */
+			// Capabilities: ['CAPABILITY_IAM'],
+
+			/* uncomment if your CloudFormation require parameters */
+			// Parameters: [
+			// 	{
+			// 		ParameterKey: 'my-parameter',
+			// 		ParameterValue: 'my-value',
+			// 	}
+			// ]
 		}
 	}
 };
