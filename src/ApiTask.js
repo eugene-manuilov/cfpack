@@ -1,3 +1,5 @@
+const chalk = require('chalk');
+
 const Task = require('./Task');
 
 class ApiTask extends Task {
@@ -12,10 +14,15 @@ class ApiTask extends Task {
 		return `${hour}:${min}:${sec}`;
 	}
 
-	startPollingEvents() {
+	startPollingEvents(stackId = null) {
+		const { stack } = this.options;
+
 		this.events = {};
+
+		this.pollParams = { StackName: stackId || stack.name };
+		this.pollInterval = setInterval(this.pollStackEvents.bind(this), 2500);
+
 		this.log.info(chalk.white.bold('Event Logs:'));
-		this.pollInterval = setInterval(this.pollStackEvents.bind(this), 5000);
 	}
 
 	stopPollingEvents() {
@@ -24,8 +31,7 @@ class ApiTask extends Task {
 	}
 
 	pollStackEvents() {
-		const { stack } = this.options;
-		this.cloudformation.describeStackEvents({ StackName: stack.name }, (err, data) => {
+		this.cloudformation.describeStackEvents(this.pollParams, (err, data) => {
 			if (!err) {
 				data.StackEvents.reverse().forEach(this.displayEvent.bind(this));
 			}
@@ -60,8 +66,8 @@ class ApiTask extends Task {
 			}
 
 			const message = [
-				`[${DeployTask.getDateTime(Timestamp)}]`,
-				(LogicalResourceId || '').padEnd(25, ' '),
+				`[${ApiTask.getDateTime(Timestamp)}]`,
+				(LogicalResourceId || '').padEnd(30, ' '),
 				status,
 				ResourceStatusReason || chalk.gray('—'),
 			];

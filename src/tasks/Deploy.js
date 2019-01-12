@@ -39,7 +39,7 @@ class DeployTask extends ApiTask {
 		const params = this.getStackParams();
 		const callback = this.getStackRequestCallback('Stack is creating...', () => {
 			this.cloudformation.waitFor('stackCreateComplete', { StackName: params.StackName }, () => {
-				this.stopPollingEvents():
+				this.stopPollingEvents();
 				this.log.message('Stack has been created.');
 			});
 		});
@@ -53,7 +53,7 @@ class DeployTask extends ApiTask {
 		const params = this.getStackParams();
 		const callback = this.getStackRequestCallback('Stack is updating...', () => {
 			this.cloudformation.waitFor('stackUpdateComplete', { StackName: params.StackName }, () => {
-				this.stopPollingEvents():
+				this.stopPollingEvents();
 				this.log.message('Stack has been updated.');
 			});
 		});

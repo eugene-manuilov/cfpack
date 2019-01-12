@@ -17,10 +17,11 @@ class DeleteTask extends ApiTask {
 		});
 
 		this.log.info(`├─ Checking whether ${stack.name} stack exists...`);
-		this.cloudformation.describeStacks(params, (err) => {
+		this.cloudformation.describeStacks(params, (err, data) => {
 			if (err) {
 				this.log.error(`└─ ${err.code}: ${err.message}`);
 			} else {
+				this.stackId = data.Stacks[0].StackId;
 				this.deleteStack();
 			}
 		});
@@ -28,7 +29,10 @@ class DeleteTask extends ApiTask {
 
 	deleteStack() {
 		const { stack } = this.options;
-		const params = { StackName: stack.name };
+		const params = {
+			StackName: stack.name,
+			ClientRequestToken: this.taskUUID,
+		};
 
 		this.cloudformation.deleteStack(params, (err, data) => {
 			if (err) {
@@ -37,9 +41,9 @@ class DeleteTask extends ApiTask {
 				this.log.info('├─ Stack is deleting...');
 				this.log.info(`└─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}\n`);
 
-				this.startPollingEvents();
+				this.startPollingEvents(this.stackId);
 				this.cloudformation.waitFor('stackDeleteComplete', params, () => {
-					this.stopPollingEvents():
+					this.stopPollingEvents();
 					this.log.message('Stack has been deleted.');
 				});
 			}
