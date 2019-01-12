@@ -1,9 +1,9 @@
 const AWS = require('aws-sdk');
 const chalk = require('chalk');
 
-const Task = require('../Task');
+const ApiTask = require('../ApiTask');
 
-class DeleteTask extends Task {
+class DeleteTask extends ApiTask {
 
 	run() {
 		this.log.message('Deleting stack...');
@@ -34,8 +34,14 @@ class DeleteTask extends Task {
 			if (err) {
 				this.log.error(`${err.code}: ${err.message}`);
 			} else {
-				this.log.info('├─ Stack has been deleted...');
-				this.log.info(`└─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}`);
+				this.log.info('├─ Stack is deleting...');
+				this.log.info(`└─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}\n`);
+
+				this.startPollingEvents();
+				this.cloudformation.waitFor('stackDeleteComplete', params, () => {
+					this.stopPollingEvents():
+					this.log.message('Stack has been deleted.');
+				});
 			}
 		});
 	}

@@ -1,35 +1,11 @@
-const crypto = require('crypto');
-
 const AWS = require('aws-sdk');
 const chalk = require('chalk');
 
-const Task = require('../Task');
+const ApiTask = require('../ApiTask');
 
-class DeployTask extends Task {
-
-	static generateClientRequestToken() {
-		const token = [];
-		for (let i = 0; i < 4; i++) {
-			token.push(crypto.randomBytes(4).toString('hex'));
-		}
-
-		return token.join('-');
-	}
-
-	static getDateTime(timestamp) {
-		const date = new Date(timestamp);
-
-		const hour = date.getHours().toString().padStart(2, '0');
-		const min  = date.getMinutes().toString().padStart(2, '0');
-		const sec  = date.getSeconds().toString().padStart(2, '0');
-
-		return `${hour}:${min}:${sec}`;
-	}
+class DeployTask extends ApiTask {
 
 	run() {
-		this.clientRequestToken = DeployTask.generateClientRequestToken();
-		this.events = {};
-
 		this.log.message('Deploying template file...');
 
 		const { stack } = this.options;
@@ -53,7 +29,7 @@ class DeployTask extends Task {
 		return Object.assign({}, stack.params, {
 			StackName: stack.name,
 			TemplateBody: JSON.stringify(this.inputArtifacts.template),
-			ClientRequestToken: this.clientRequestToken,
+			ClientRequestToken: this.taskUUID,
 		});
 	}
 
@@ -63,8 +39,7 @@ class DeployTask extends Task {
 		const params = this.getStackParams();
 		const callback = this.getStackRequestCallback('Stack is creating...', () => {
 			this.cloudformation.waitFor('stackCreateComplete', { StackName: params.StackName }, () => {
-				clearInterval(this.pollInterval);
-				this.log.info('');
+				this.stopPollingEvents():
 				this.log.message('Stack has been created.');
 			});
 		});
@@ -78,8 +53,7 @@ class DeployTask extends Task {
 		const params = this.getStackParams();
 		const callback = this.getStackRequestCallback('Stack is updating...', () => {
 			this.cloudformation.waitFor('stackUpdateComplete', { StackName: params.StackName }, () => {
-				clearInterval(this.pollInterval);
-				this.log.info('');
+				this.stopPollingEvents():
 				this.log.message('Stack has been updated.');
 			});
 		});
@@ -98,56 +72,10 @@ class DeployTask extends Task {
 				this.log.info(`├─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}`);
 				this.log.info(`└─ StackId: ${chalk.magenta(data.StackId)}\n`);
 
-				this.log.info(chalk.white.bold('Event Logs:'));
-				this.pollInterval = setInterval(this.pollStackEvents.bind(this), 5000);
-
+				this.startPollingEvents();
 				callback();
 			}
 		};
-	}
-
-	pollStackEvents() {
-		const { stack } = this.options;
-		this.cloudformation.describeStackEvents({ StackName: stack.name }, (err, data) => {
-			if (!err) {
-				data.StackEvents.reverse().forEach(this.displayEvent.bind(this));
-			}
-		});
-	}
-
-	displayEvent(event) {
-		const { EventId, ClientRequestToken, Timestamp, LogicalResourceId, ResourceStatus, ResourceStatusReason } = event;
-
-		if (ClientRequestToken === this.clientRequestToken && !this.events[EventId]) {
-			this.events[EventId] = true;
-
-			let status = (ResourceStatus || '').padEnd(50, ' ');
-			switch (ResourceStatus) {
-				case 'CREATE_COMPLETE':
-				case 'UPDATE_COMPLETE':
-				case 'UPDATE_ROLLBACK_COMPLETE':
-					status = chalk.green.bold(status);
-					break;
-				case 'CREATE_FAILED':
-				case 'UPDATE_FAILED':
-				case 'UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS':
-				case 'UPDATE_ROLLBACK_IN_PROGRESS':
-					status = chalk.red.bold(status);
-					break;
-				default:
-					status = chalk.gray.bold(status);
-					break;
-			}
-
-			const message = [
-				`[${DeployTask.getDateTime(Timestamp)}]`,
-				(LogicalResourceId || '').padEnd(25, ' '),
-				status,
-				ResourceStatusReason || chalk.gray('—'),
-			];
-
-			this.log.info(message.join(' '));
-		}
 	}
 
 }

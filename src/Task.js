@@ -1,8 +1,14 @@
-const chalk = require('chalk');
+const crypto = require('crypto');
 
 class Task {
 
 	constructor() {
+		const token = [];
+		for (let i = 0; i < 4; i++) {
+			token.push(crypto.randomBytes(4).toString('hex'));
+		}
+
+		this.taskUUID = token.join('-');
 		this.inputArtifacts = {};
 		this.outputArtifacts = {};
 		this.options = {};
