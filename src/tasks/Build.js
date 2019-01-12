@@ -23,7 +23,7 @@ class BuildTask extends Task {
 		this.processTemplates();
 
 		this.saveFinalTemplate();
-		this.log.info(`└─ Final template: ${chalk.magenta(this.outputArtifacts.templateFile)}`);
+		this.log.info(`└─ Final template: ${chalk.magenta(this.outputArtifacts.templateFile)}\n`);
 	}
 
 	findTemplates() {
