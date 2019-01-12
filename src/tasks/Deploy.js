@@ -61,29 +61,33 @@ class DeployTask extends Task {
 		this.log.info(`└─ Stack doesn't exist. Creating a new one...\n`);
 
 		const params = this.getStackParams();
-		const callback = this.getStackRequestCallback('Stack is creating...');
+		const callback = this.getStackRequestCallback('Stack is creating...', () => {
+			this.cloudformation.waitFor('stackCreateComplete', { StackName: params.StackName }, () => {
+				clearInterval(this.pollInterval);
+				this.log.info('');
+				this.log.message('Stack has been created.');
+			});
+		});
 
 		this.cloudformation.createStack(params, callback);
-		this.cloudformation.waitFor('stackCreateComplete', { StackName: params.StackName }, () => {
-			clearInterval(this.pollInterval);
-			this.log.message('Stack has been created.');
-		});
 	}
 
 	updateStack() {
 		this.log.info(`└─ Stack exists, updating...\n`);
 
 		const params = this.getStackParams();
-		const callback = this.getStackRequestCallback('Stack is updating...');
+		const callback = this.getStackRequestCallback('Stack is updating...', () => {
+			this.cloudformation.waitFor('stackUpdateComplete', { StackName: params.StackName }, () => {
+				clearInterval(this.pollInterval);
+				this.log.info('');
+				this.log.message('Stack has been updated.');
+			});
+		});
 
 		this.cloudformation.updateStack(params, callback);
-		this.cloudformation.waitFor('stackUpdateComplete', { StackName: params.StackName }, () => {
-			clearInterval(this.pollInterval);
-			this.log.message('Stack has been updated...');
-		});
 	}
 
-	getStackRequestCallback(message) {
+	getStackRequestCallback(message, callback) {
 		return (err, data) => {
 			if (err) {
 				this.log.error(`${err.code}: ${err.message}`, false);
@@ -96,6 +100,8 @@ class DeployTask extends Task {
 
 				this.log.info(chalk.white.bold('Event Logs:'));
 				this.pollInterval = setInterval(this.pollStackEvents.bind(this), 5000);
+
+				callback();
 			}
 		};
 	}
