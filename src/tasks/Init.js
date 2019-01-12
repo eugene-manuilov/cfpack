@@ -1,22 +1,54 @@
 const fs = require('fs');
 const path = require('path');
+const yargsInteractive = require('yargs-interactive');
 
 const Task = require('../Task');
 
 class Init extends Task {
 
 	run() {
+		const options = {
+			interactive: { default: true },
+			stackName: {
+				type: 'input',
+				default: 'my-stack',
+				describe: 'Enter stack name',
+			},
+			stackRegion: {
+				type: 'input',
+				default: 'us-east-1',
+				describe: 'Enter region',
+			},
+			entryFolder: {
+				type: 'input',
+				default: 'cloudformation',
+				describe: 'Templates folder name',
+			},
+			outputFile: {
+				type: 'input',
+				default: 'cloudformation.json',
+				describe: 'File name of combined template',
+			},
+		};
+
+		yargsInteractive()
+			.usage('$0 <command> [args]')
+			.interactive(options)
+			.then(Init.saveConfig);
+	}
+
+	static saveConfig(results) {
 		const filename = path.resolve(process.cwd(), 'cfpack.config.js');
 		const stream = fs.createWriteStream(filename, { encoding: 'utf8' });
 
 		stream.write(`module.exports = {
-	entry: "cloudformation", // folder with templates
-	output: "cloudformation.json", // resulting template file
+	entry: ${JSON.stringify(results.entryFolder)}, // folder with templates
+	output: ${JSON.stringify(results.outputFile)}, // resulting template file
 	verbose: true, // whether or not to display additional details
 	silent: false, // whether or not to prevent output from being displayed in stdout
 	stack: {
-		name: "my-stack", // stack name
-		region: "us-east-1", // stack region
+		name: ${JSON.stringify(results.stackName)}, // stack name
+		region: ${JSON.stringify(results.stackRegion)}, // stack region
 		params: {
 			/**
 			 * Extra parameters that can be used by API
