@@ -38,14 +38,25 @@ class ApiTask extends Task {
 		});
 	}
 
+	getResourceMaxLength() {
+		if (!this.resourceMaxLength) {
+			this.resourceMaxLength = Math.max(
+				this.options.stack.name.length,
+				...Object.keys(this.inputArtifacts.template.Resources).map(item => item.length),
+			);
+		}
+
+		return this.resourceMaxLength;
+	}
+
 	displayEvent(event) {
 		const { EventId, ClientRequestToken, Timestamp, LogicalResourceId, ResourceStatus, ResourceStatusReason } = event;
 
 		if (ClientRequestToken === this.taskUUID && !this.events[EventId]) {
 			this.events[EventId] = true;
 
-			let resource = (LogicalResourceId || '').padEnd(30, ' ');
-			let status = (ResourceStatus || '').padEnd(50, ' ');
+			let resource = (LogicalResourceId || '').padEnd(this.getResourceMaxLength(), ' ');
+			let status = (ResourceStatus || '').padEnd(45, ' ');
 
 			switch (ResourceStatus) {
 				case 'CREATE_COMPLETE':
