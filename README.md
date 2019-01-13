@@ -4,6 +4,8 @@ A small CLI tool that can help you to deal with huge CloudFormation templates by
 
 > Note: this project is in its early stages and may lack some functionality or may have some bugs. Please, create a new issue if you find something. It will help to make this tool better.
 
+[![cfpack](https://asciinema.org/a/dKW7QfpyWmGNn3SQehEgXgZ3f.svg)](https://asciinema.org/a/dKW7QfpyWmGNn3SQehEgXgZ3f)
+
 ## Installation
 
 Install the package as global dependency to be able to use with different projects:
