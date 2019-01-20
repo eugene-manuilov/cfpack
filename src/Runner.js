@@ -38,6 +38,9 @@ class Runner {
 
 	execute() {
 		this.tasks.reduce(this.executeTask.bind(this), {});
+		if (this.log) {
+			this.log.stop();
+		}
 	}
 
 	executeTask(artifacts, task) {
