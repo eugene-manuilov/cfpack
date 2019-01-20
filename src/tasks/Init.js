@@ -69,7 +69,6 @@ class Init extends Task {
 			// 	},
 			// ],
 		},
-
 		/* uncomment if you need to upload artifacts before creating/updating your stack */
 		// artifacts: [
 		// 	{
