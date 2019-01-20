@@ -8,7 +8,8 @@ class Logger {
 		this.verbose = verbose;
 
 		this.ora = ora({
-			spinner: 'line',
+			spinner: 'dots',
+			color: 'white',
 			hideCursor: true,
 		});
 	}
