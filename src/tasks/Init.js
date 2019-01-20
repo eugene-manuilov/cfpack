@@ -6,7 +6,7 @@ const Task = require('../Task');
 
 class Init extends Task {
 
-	run() {
+	run(next) {
 		const options = {
 			interactive: { default: true },
 			stackName: {
@@ -34,7 +34,10 @@ class Init extends Task {
 		yargsInteractive()
 			.usage('$0 <command> [args]')
 			.interactive(options)
-			.then(Init.saveConfig);
+			.then((results) => {
+				Init.saveConfig(results);
+				next(results);
+			});
 	}
 
 	static saveConfig(results) {

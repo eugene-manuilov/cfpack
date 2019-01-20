@@ -5,11 +5,11 @@ const DeployTask = require('../src/tasks/Deploy');
 module.exports = function(args) {
 	const runner = new Runner(args);
 
-	const build = new BuildTask();
-	const deploy = new DeployTask();
-	
 	runner.loadConfig();
-	runner.chain([build, deploy]);
+	runner.setupLogs();
+
+	runner.use(new BuildTask());
+	runner.use(new DeployTask());
 
 	runner.execute();
 };

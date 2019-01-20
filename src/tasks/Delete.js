@@ -5,7 +5,7 @@ const ApiTask = require('../ApiTask');
 
 class DeleteTask extends ApiTask {
 
-	run() {
+	run(next) {
 		this.log.message('Deleting stack...');
 
 		const { stack } = this.options;
@@ -20,14 +20,15 @@ class DeleteTask extends ApiTask {
 		this.cloudformation.describeStacks(params, (err, data) => {
 			if (err) {
 				this.log.error(`└─ ${err.code}: ${err.message}`);
+				next();
 			} else {
 				this.stackId = data.Stacks[0].StackId;
-				this.deleteStack();
+				this.deleteStack(next);
 			}
 		});
 	}
 
-	deleteStack() {
+	deleteStack(next) {
 		const { stack } = this.options;
 		const params = {
 			StackName: stack.name,
@@ -37,6 +38,7 @@ class DeleteTask extends ApiTask {
 		this.cloudformation.deleteStack(params, (err, data) => {
 			if (err) {
 				this.log.error(`${err.code}: ${err.message}`);
+				next();
 			} else {
 				this.log.info('├─ Stack is deleting...');
 				this.log.info(`└─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}\n`);
@@ -45,6 +47,7 @@ class DeleteTask extends ApiTask {
 				this.cloudformation.waitFor('stackDeleteComplete', { StackName: this.stackId }, () => {
 					this.stopPollingEvents();
 					this.log.message('Stack has been deleted.');
+					next();
 				});
 			}
 		});

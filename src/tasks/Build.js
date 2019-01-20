@@ -10,7 +10,7 @@ const intrinsicFunctions = require('../utils/intrinsic-functions-schema');
 
 class BuildTask extends Task {
 
-	run() {
+	run(next) {
 		this.log.message('Build template file...');
 
 		this.log.info(`├─ Looking for templates in the ${this.options.entry} folder...`);
@@ -24,6 +24,8 @@ class BuildTask extends Task {
 
 		this.saveFinalTemplate();
 		this.log.info(`└─ Final template: ${chalk.magenta(this.outputArtifacts.templateFile)}\n`);
+
+		next(this.outputArtifacts);
 	}
 
 	findTemplates() {
