@@ -2,12 +2,13 @@ const path = require('path');
 const chalk = require('chalk');
 
 const Logger = require('./Logger');
+const Middleware = require('./Middleware');
 
 class Runner {
 
 	constructor(args) {
 		this.args = args;
-		this.tasks = [];
+		this.middleware = new Middleware();
 	}
 
 	loadConfig() {
@@ -32,25 +33,24 @@ class Runner {
 		}
 	}
 
-	chain(tasks) {
-		this.tasks = tasks;
+	use(task) {
+		this.middleware.use((artifacts, next) => {
+			task.setOptions(this.args);
+			task.setLogger(this.log);
+			task.setArtifacts(artifacts);
+
+			task.run(next);
+		});
+
+		return this;
 	}
 
 	execute() {
-		this.tasks.reduce(this.executeTask.bind(this), {});
-		if (this.log) {
-			this.log.stop();
-		}
-	}
-
-	executeTask(artifacts, task) {
-		task.setOptions(this.args);
-		task.setLogger(this.log);
-		task.setInputArtifacts(artifacts);
-
-		task.run();
-		
-		return task.getOutputArtifacts();
+		this.middleware.go({}, () => {
+			if (this.log) {
+				this.log.stop();
+			}
+		});
 	}
 
 }

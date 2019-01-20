@@ -22,15 +22,11 @@ class Task {
 		this.log = log;
 	}
 
-	setInputArtifacts(artifacts) {
+	setArtifacts(artifacts) {
 		this.inputArtifacts = artifacts;
 	}
 
-	getOutputArtifacts() {
-		return this.outputArtifacts;
-	}
-
-	run() {
+	run(next) {
 		throw new Error('The run method is not implemented.');
 	}
 
