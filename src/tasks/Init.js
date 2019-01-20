@@ -63,10 +63,26 @@ class Init extends Task {
 			// 	{
 			// 		ParameterKey: 'my-parameter',
 			// 		ParameterValue: 'my-value',
-			// 	}
-			// ]
-		}
-	}
+			// 	},
+			// ],
+		},
+
+		/* uncomment if you need to upload artifacts before creating/updating your stack */
+		// artifacts: [
+		// 	{
+		// 		bucket: 's3-bucket-name',
+		// 		files: {
+		// 			'location/one/': 'local/files/**/*',
+		// 			'location/two.zip': {
+		// 				include: '*.xml',
+		// 				exclude: 'test.xml',
+		// 				path: 'local/files/**/*',
+		// 				compression: 'zip', // zip | tar.gz | none
+		// 			},
+		// 		},
+		// 	},
+		// ],
+	},
 };
 `);
 		stream.close();
