@@ -25,12 +25,18 @@ class Runner {
 		}
 	}
 
+	setupLogs(start = true) {
+		this.log = new Logger(this.args.silent, this.args.verbose);
+		if (start) {
+			this.log.start();
+		}
+	}
+
 	chain(tasks) {
 		this.tasks = tasks;
 	}
 
 	execute() {
-		this.log = new Logger(this.args.silent, this.args.verbose);
 		this.tasks.reduce(this.executeTask.bind(this), {});
 	}
 

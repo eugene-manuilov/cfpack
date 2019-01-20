@@ -6,6 +6,7 @@ module.exports = function(args) {
 	const build = new BuildTask();
 	
 	runner.loadConfig();
+	runner.setupLogs();
 	runner.chain([build]);
 	runner.execute();
 };

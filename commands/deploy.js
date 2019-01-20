@@ -9,6 +9,7 @@ module.exports = function(args) {
 	const deploy = new DeployTask();
 	
 	runner.loadConfig();
+	runner.setupLogs();
 	runner.chain([build, deploy]);
 
 	runner.execute();

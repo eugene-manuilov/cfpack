@@ -6,6 +6,7 @@ module.exports = function(args) {
 	const task = new DeleteTask();
 	
 	runner.loadConfig();
+	runner.setupLogs();
 	runner.chain([task]);
 	runner.execute();
 };
