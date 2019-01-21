@@ -4,6 +4,7 @@
 
 - Added spinner to the terminal output to indicate process.
 - Reworked tasks runner to use middlewares instead of array of tasks.
+- Updated init command to use existing values if config file is already created.
 
 ## v1.1.0 (2019-01-13)
 
