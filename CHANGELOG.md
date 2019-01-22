@@ -2,6 +2,7 @@
 
 ## v1.2.0 (2019-xx-xx)
 
+- Added `artifacts` command to upload files to a s3 bucket.
 - Added spinner to the terminal output to indicate process.
 - Reworked tasks runner to use middlewares instead of array of tasks.
 - Updated init command to use existing values if config file is already created.
