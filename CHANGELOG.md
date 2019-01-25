@@ -4,6 +4,7 @@
 
 - Added `artifacts` command to upload files to a s3 bucket.
 - Added spinner to the terminal output to indicate process.
+- Added eslint config to standardise code base.
 - Reworked tasks runner to use middlewares instead of array of tasks.
 - Updated init command to use existing values if config file is already created.
 
