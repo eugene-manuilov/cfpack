@@ -4,7 +4,7 @@ const path = require('path');
 const AWS = require('aws-sdk');
 const chalk = require('chalk');
 const glob = require('glob');
-const zip = require('node-native-zip');
+const Zip = require('node-native-zip');
 
 const Task = require('../Task');
 
@@ -19,7 +19,8 @@ class Artifacts extends Task {
 		const { stack } = this.options;
 		const { artifacts } = stack || {};
 		if (!artifacts) {
-			return next(this.input);
+			next(this.input);
+			return;
 		}
 
 		this.s3 = new AWS.S3({
@@ -41,9 +42,9 @@ class Artifacts extends Task {
 
 	runNextArtifacts() {
 		const item = this.list.pop();
-		if (item) {
-			return this.processArtifacts(item).then(this.runNextArtifacts);
-		}
+		return item
+			? this.processArtifacts(item).then(this.runNextArtifacts)
+			: null;
 	}
 
 	processArtifacts(artifact) {
@@ -91,7 +92,7 @@ class Artifacts extends Task {
 			baseDir = path.join(process.cwd(), baseDir);
 		}
 
-		let filepath =  args.path || '';
+		let filepath = args.path || '';
 		if (!filepath) {
 			return false;
 		}
@@ -112,9 +113,7 @@ class Artifacts extends Task {
 								.catch(resolve);
 							break;
 						default:
-							const uri = chalk.bold(`s3://${bucket}/${location}`);
-							this.log.info(`├─ Uploaded files to ${uri}`)
-			
+							this.log.info(`├─ Uploaded files to ${chalk.bold(`s3://${bucket}/${location}`)}`);
 							resolve();
 							break;
 					}
@@ -125,7 +124,7 @@ class Artifacts extends Task {
 
 	compressZipAndUpload(bucket, location, baseDir, files) {
 		const filesMap = [];
-		const archive = new zip();
+		const archive = new Zip();
 
 		files.forEach((file) => {
 			if (!fs.statSync(file).isDirectory()) {
@@ -141,22 +140,22 @@ class Artifacts extends Task {
 		}
 
 		return new Promise((resolve) => {
-			archive.addFiles(filesMap, (err) => {
-				if (err) {
-					this.log.warning(err);
+			archive.addFiles(filesMap, (archiveError) => {
+				if (archiveError) {
+					this.log.warning(archiveError);
 				} else {
 					const params = {
-						Bucket: bucket, 
+						Bucket: bucket,
 						Key: location,
 						Body: archive.toBuffer(),
 					};
 
-					this.s3.putObject(params, (err) => {
-						if (err) {
-							this.log.warning(`├─ ${err}`);
+					this.s3.putObject(params, (putError) => {
+						if (putError) {
+							this.log.warning(`├─ ${putError}`);
 						} else {
 							const uri = chalk.bold(`s3://${bucket}/${location}`);
-							this.log.info(`├─ Uploaded files to ${uri}`)
+							this.log.info(`├─ Uploaded files to ${uri}`);
 						}
 
 						resolve();
