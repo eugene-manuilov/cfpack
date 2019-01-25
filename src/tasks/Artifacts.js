@@ -1,6 +1,10 @@
+const fs = require('fs');
+const path = require('path');
+
 const AWS = require('aws-sdk');
 const chalk = require('chalk');
 const glob = require('glob');
+const zip = require('node-native-zip');
 
 const Task = require('../Task');
 
@@ -22,6 +26,7 @@ class Artifacts extends Task {
 		this.processArtifacts(this.list.pop())
 			.then(this.runNextArtifacts)
 			.then(() => {
+				this.log.info('');
 				next(this.input);
 			})
 			.catch((err) => {
@@ -72,23 +77,77 @@ class Artifacts extends Task {
 	}
 
 	processArtifact(bucket, location, options) {
-		const path = typeof options === 'string' ? options : (options.path || '');
-		if (!path) {
+		const args = typeof options === 'string'
+			? { path: options }
+			: Object.assign({}, options);
+
+		let baseDir = args.baseDir || '.';
+		if (!path.isAbsolute(baseDir)) {
+			baseDir = path.join(process.cwd(), baseDir);
+		}
+
+		console.log(options);
+
+		let filepath =  args.path || '';
+		if (!filepath) {
 			return false;
 		}
 
+		if (args.baseDir) {
+			filepath = path.join(args.baseDir, filepath);
+		}
+
 		return new Promise((resolve) => {
-			glob(path, { absolute: true }, (err, files) => {
+			glob(filepath, { absolute: true, stat: true }, (err, files) => {
 				if (err) {
 					this.log.error(err);
 				} else {
-					// console.log(files);
+					switch (args.compression) {
+						case 'zip':
+							this.compressZipAndUpload(baseDir, files)
+								.then(resolve)
+								.catch(resolve);
+							break;
+						default:
+							const uri = chalk.bold(`s3://${bucket}/${location}`);
+							this.log.info(`├─ Uploaded files to ${uri}`)
+			
+							resolve();
+							break;
+					}
 				}
+			});
+		});
+	}
 
-				const uri = chalk.bold(`s3://${bucket}/${location}`);
-				this.log.info(`├─ Uploaded files to ${uri}`)
+	compressZipAndUpload(baseDir, files) {
+		const filesMap = [];
+		const archive = new zip();
 
-				resolve();
+		files.forEach((file) => {
+			if (!fs.statSync(file).isDirectory()) {
+				filesMap.push({
+					name: file.substring(baseDir.length),
+					path: file,
+				});
+			}
+		});
+
+		if (!filesMap.length) {
+			return Promise.resolve();
+		}
+
+		return new Promise((resolve) => {
+			archive.addFiles(filesMap, (err) => {
+				if (err) {
+					this.log.warning(err);
+				} else {
+					const buff = archive.toBuffer();
+				
+					fs.writeFile("./test2.zip", buff, function () {
+						resolve();
+					});
+				}
 			});
 		});
 	}

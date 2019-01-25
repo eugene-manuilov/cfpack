@@ -68,6 +68,7 @@ class DeployTask extends ApiTask {
 			if (err) {
 				this.log.error(`${err.code}: ${err.message}`, false);
 				this.log.info(`└─ RequestId: ${chalk.magenta(err.requestId)}`);
+				this.log.stop();
 				process.exit(1);
 			} else {
 				this.log.message(message);

@@ -96,9 +96,10 @@ class Init extends Task {
 		// 		files: {
 		// 			'location/one/': 'local/files/**/*',
 		// 			'location/two.zip': {
+		// 				baseDir: 'local/files/',
 		// 				include: '*.xml',
 		// 				exclude: 'test.xml',
-		// 				path: 'local/files/**/*',
+		// 				path: '**/*',
 		// 				compression: 'zip', // zip | tar.gz | none
 		// 			},
 		// 		},
