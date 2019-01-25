@@ -22,6 +22,11 @@ class Artifacts extends Task {
 			return next(this.input);
 		}
 
+		this.s3 = new AWS.S3({
+			apiVersion: '2006-03-01',
+			region: stack.region,
+		});
+
 		this.list = (Array.isArray(artifacts) ? artifacts : [artifacts]).reverse();
 		this.processArtifacts(this.list.pop())
 			.then(this.runNextArtifacts)
@@ -86,8 +91,6 @@ class Artifacts extends Task {
 			baseDir = path.join(process.cwd(), baseDir);
 		}
 
-		console.log(options);
-
 		let filepath =  args.path || '';
 		if (!filepath) {
 			return false;
@@ -104,7 +107,7 @@ class Artifacts extends Task {
 				} else {
 					switch (args.compression) {
 						case 'zip':
-							this.compressZipAndUpload(baseDir, files)
+							this.compressZipAndUpload(bucket, location, baseDir, files)
 								.then(resolve)
 								.catch(resolve);
 							break;
@@ -120,7 +123,7 @@ class Artifacts extends Task {
 		});
 	}
 
-	compressZipAndUpload(baseDir, files) {
+	compressZipAndUpload(bucket, location, baseDir, files) {
 		const filesMap = [];
 		const archive = new zip();
 
@@ -142,9 +145,20 @@ class Artifacts extends Task {
 				if (err) {
 					this.log.warning(err);
 				} else {
-					const buff = archive.toBuffer();
-				
-					fs.writeFile("./test2.zip", buff, function () {
+					const params = {
+						Bucket: bucket, 
+						Key: location,
+						Body: archive.toBuffer(),
+					};
+
+					this.s3.putObject(params, (err) => {
+						if (err) {
+							this.log.warning(`├─ ${err}`);
+						} else {
+							const uri = chalk.bold(`s3://${bucket}/${location}`);
+							this.log.info(`├─ Uploaded files to ${uri}`)
+						}
+
 						resolve();
 					});
 				}
