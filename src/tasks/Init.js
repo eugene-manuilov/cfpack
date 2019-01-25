@@ -6,6 +6,7 @@ const Task = require('../Task');
 
 class Init extends Task {
 
+	/* eslint-disable class-methods-use-this */
 	run(next) {
 		const defaults = {
 			stackname: 'my-stack',
@@ -55,6 +56,7 @@ class Init extends Task {
 				next(results);
 			});
 	}
+	/* eslint-enable */
 
 	static getConfigFilename() {
 		return path.resolve(process.cwd(), 'cfpack.config.js');

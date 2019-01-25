@@ -3,7 +3,7 @@ const BuildTask = require('../src/tasks/Build');
 const ArtifactsTask = require('../src/tasks/Artifacts');
 const DeployTask = require('../src/tasks/Deploy');
 
-module.exports = function(args) {
+module.exports = (args) => {
 	const runner = new Runner(args);
 
 	runner.loadConfig();

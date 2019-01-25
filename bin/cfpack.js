@@ -4,9 +4,9 @@ const path = require('path');
 const yargs = require('yargs');
 
 function dispatch(args) {
-	const commandPath = path.resolve(__dirname, '../commands/', args['_'][0]);
+	const commandPath = path.resolve(__dirname, '../commands/', args._[0]);
 	const command = require(commandPath);
-	
+
 	command(args);
 }
 
@@ -23,7 +23,7 @@ yargs.options({
 	silent: {
 		type: 'boolean',
 		describe: 'Prevent output from being displayed in stdout',
-	}
+	},
 });
 
 yargs.command('init', 'Initializes cfpack config in the current directory.', {}, dispatch);

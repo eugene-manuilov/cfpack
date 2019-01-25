@@ -19,7 +19,7 @@ class BuildTask extends Task {
 			return;
 		}
 
-		this.log.info(`├─ Processing found templates...`);
+		this.log.info('├─ Processing found templates...');
 		this.processTemplates();
 
 		this.saveFinalTemplate();
@@ -49,16 +49,18 @@ class BuildTask extends Task {
 	}
 
 	walkTemplates(dir, list) {
+		let newlist = [...list];
+
 		fs.readdirSync(dir).forEach((file) => {
 			const filename = path.join(dir, file);
 			if (fs.statSync(filename).isDirectory()) {
-				list = this.walkTemplates(filename, list);
+				newlist = this.walkTemplates(filename, list);
 			} else {
-				list.push(filename);
+				newlist.push(filename);
 			}
 		});
 
-		return list;
+		return newlist;
 	}
 
 	processTemplates() {
@@ -73,7 +75,8 @@ class BuildTask extends Task {
 			Object.keys(doc).forEach((group) => {
 				if (typeof doc[group] === 'object') {
 					if (doc[group].constructor.name === 'Date') {
-						template[group] = doc[group].toISOString().split('T')[0];
+						const [dateString] = doc[group].toISOString().split('T');
+						template[group] = dateString;
 					} else {
 						if (!template[group]) {
 							template[group] = {};
@@ -98,7 +101,7 @@ class BuildTask extends Task {
 		try {
 			const doc = JSON.parse(content);
 			return doc;
-		} catch(e) {
+		} catch (e) {
 			// do nothing
 		}
 
