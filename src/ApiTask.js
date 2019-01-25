@@ -8,8 +8,8 @@ class ApiTask extends Task {
 		const date = new Date(timestamp);
 
 		const hour = date.getHours().toString().padStart(2, '0');
-		const min  = date.getMinutes().toString().padStart(2, '0');
-		const sec  = date.getSeconds().toString().padStart(2, '0');
+		const min = date.getMinutes().toString().padStart(2, '0');
+		const sec = date.getSeconds().toString().padStart(2, '0');
 
 		return `${hour}:${min}:${sec}`;
 	}
@@ -53,7 +53,14 @@ class ApiTask extends Task {
 	}
 
 	displayEvent(event) {
-		const { EventId, ClientRequestToken, Timestamp, LogicalResourceId, ResourceStatus, ResourceStatusReason } = event;
+		const {
+			EventId,
+			ClientRequestToken,
+			Timestamp,
+			LogicalResourceId,
+			ResourceStatus,
+			ResourceStatusReason,
+		} = event;
 
 		if (ClientRequestToken === this.taskUUID && !this.events[EventId]) {
 			this.events[EventId] = true;

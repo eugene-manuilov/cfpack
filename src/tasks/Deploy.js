@@ -34,7 +34,7 @@ class DeployTask extends ApiTask {
 	}
 
 	createStack(next) {
-		this.log.info(`└─ Stack doesn't exist. Creating a new one...\n`);
+		this.log.info('└─ Stack doesn\'t exist. Creating a new one...\n');
 
 		const params = this.getStackParams();
 		const callback = this.getStackRequestCallback('Stack is creating...', () => {
@@ -49,7 +49,7 @@ class DeployTask extends ApiTask {
 	}
 
 	updateStack(next) {
-		this.log.info(`└─ Stack exists, updating...\n`);
+		this.log.info('└─ Stack exists, updating...\n');
 
 		const params = this.getStackParams();
 		const callback = this.getStackRequestCallback('Stack is updating...', () => {

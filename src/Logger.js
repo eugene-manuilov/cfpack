@@ -26,7 +26,7 @@ class Logger {
 		}
 	}
 
-	_sayIf(message, condition) {
+	sayIf(message, condition) {
 		if (condition) {
 			this.stop();
 			process.stdout.write(`${message}\n`);
@@ -35,15 +35,15 @@ class Logger {
 	}
 
 	message(message) {
-		this._sayIf(chalk.green(message), !this.silent);
+		this.sayIf(chalk.green(message), !this.silent);
 	}
 
 	info(message) {
-		this._sayIf(chalk.white(message), !this.silent && this.verbose);
+		this.sayIf(chalk.white(message), !this.silent && this.verbose);
 	}
 
 	warning(message) {
-		this._sayIf(chalk.yellow(message), !this.silent && this.verbose);
+		this.sayIf(chalk.yellow(message), !this.silent && this.verbose);
 	}
 
 	error(message, exit = true) {

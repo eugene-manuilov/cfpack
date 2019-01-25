@@ -26,9 +26,11 @@ class Task {
 		this.inputArtifacts = artifacts;
 	}
 
-	run(next) {
+	/* eslint-disable class-methods-use-this */
+	run() {
 		throw new Error('The run method is not implemented.');
 	}
+	/* eslint-enable */
 
 }
 

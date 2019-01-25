@@ -6,6 +6,7 @@ const Task = require('../Task');
 
 class Init extends Task {
 
+	/* eslint-disable class-methods-use-this */
 	run(next) {
 		const options = {
 			interactive: { default: true },
@@ -39,6 +40,7 @@ class Init extends Task {
 				next(results);
 			});
 	}
+	/* eslint-enable */
 
 	static saveConfig(results) {
 		const filename = path.resolve(process.cwd(), 'cfpack.config.js');

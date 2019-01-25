@@ -2,7 +2,7 @@ const Runner = require('../src/Runner');
 const BuildTask = require('../src/tasks/Build');
 const DeployTask = require('../src/tasks/Deploy');
 
-module.exports = function(args) {
+module.exports = (args) => {
 	const runner = new Runner(args);
 
 	runner.loadConfig();
