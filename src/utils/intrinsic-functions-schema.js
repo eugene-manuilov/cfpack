@@ -47,6 +47,6 @@ module.exports = yaml.Schema.create([
 	}),
 	new yaml.Type('!Ref', {
 		kind: 'scalar',
-		construct: data => ({ 'Ref': data }),
+		construct: data => ({ Ref: data }),
 	}),
 ]);
