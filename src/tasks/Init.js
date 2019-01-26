@@ -102,7 +102,7 @@ class Init extends Task {
 		// 				include: '*.xml',
 		// 				exclude: 'test.xml',
 		// 				path: '**/*',
-		// 				compression: 'zip', // zip | tar.gz | none
+		// 				compression: 'zip', // zip | none
 		// 			},
 		// 		},
 		// 	},

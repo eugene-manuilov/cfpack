@@ -105,24 +105,20 @@ class Artifacts extends Task {
 			glob(filepath, { absolute: true, stat: true }, (err, files) => {
 				if (err) {
 					this.log.error(err);
+				} else if (args.compression === 'zip') {
+					this.compressAndUploadFiles(bucket, location, baseDir, files)
+						.then(resolve)
+						.catch(resolve);
 				} else {
-					switch (args.compression) {
-						case 'zip':
-							this.compressZipAndUpload(bucket, location, baseDir, files)
-								.then(resolve)
-								.catch(resolve);
-							break;
-						default:
-							this.log.info(`├─ Uploaded files to ${chalk.bold(`s3://${bucket}/${location}`)}`);
-							resolve();
-							break;
-					}
+					this.uploadFiles(bucket, location, baseDir, files)
+						.then(resolve)
+						.catch(resolve);
 				}
 			});
 		});
 	}
 
-	compressZipAndUpload(bucket, location, baseDir, files) {
+	compressAndUploadFiles(bucket, location, baseDir, files) {
 		const filesMap = [];
 		const archive = new Zip();
 
@@ -163,6 +159,43 @@ class Artifacts extends Task {
 				}
 			});
 		});
+	}
+
+	uploadFiles(bucket, location, baseDir, files) {
+		const filesMap = [];
+
+		files.forEach((file) => {
+			if (!fs.statSync(file).isDirectory()) {
+				filesMap.push({
+					name: path.join(location, file.substring(baseDir.length)),
+					path: file,
+				});
+			}
+		});
+
+		if (!filesMap.length) {
+			return Promise.resolve();
+		}
+
+		const promises = [];
+		for (let i = 0, len = filesMap.length; i < len; i++) {
+			const params = {
+				Bucket: bucket,
+				Key: filesMap[i].name,
+				Body: fs.createReadStream(filesMap[i].path),
+			};
+
+			promises.push(this.s3.putObject(params).promise());
+		}
+
+		return Promise.all(promises)
+			.then(() => {
+				const uri = chalk.bold(`s3://${bucket}/${location}`);
+				this.log.info(`├─ Uploaded files to ${uri}`);
+			})
+			.catch((err) => {
+				this.log.error(err);
+			});
 	}
 
 }
