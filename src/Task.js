@@ -9,8 +9,8 @@ class Task {
 		}
 
 		this.taskUUID = token.join('-');
-		this.inputArtifacts = {};
-		this.outputArtifacts = {};
+		this.input = {};
+		this.output = {};
 		this.options = {};
 	}
 
@@ -22,8 +22,8 @@ class Task {
 		this.log = log;
 	}
 
-	setArtifacts(artifacts) {
-		this.inputArtifacts = artifacts;
+	setData(input) {
+		this.input = input;
 	}
 
 	/* eslint-disable class-methods-use-this */

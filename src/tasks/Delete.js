@@ -38,7 +38,6 @@ class DeleteTask extends ApiTask {
 		this.cloudformation.deleteStack(params, (err, data) => {
 			if (err) {
 				this.log.error(`${err.code}: ${err.message}`);
-				next();
 			} else {
 				this.log.info('├─ Stack is deleting...');
 				this.log.info(`└─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}\n`);

@@ -40,7 +40,7 @@ class ApiTask extends Task {
 
 	getResourceMaxLength() {
 		if (!this.resourceMaxLength) {
-			const { template } = this.inputArtifacts || {};
+			const { template } = this.input || {};
 			const { Resources } = template || {};
 			this.resourceMaxLength = Math.max(
 				35, // not less than 35 characters

@@ -34,10 +34,10 @@ class Runner {
 	}
 
 	use(task) {
-		this.middleware.use((artifacts, next) => {
+		this.middleware.use((data, next) => {
 			task.setOptions(this.args);
 			task.setLogger(this.log);
-			task.setArtifacts(artifacts);
+			task.setData(data);
 
 			task.run(next);
 		});

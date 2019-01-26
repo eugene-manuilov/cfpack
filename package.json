@@ -38,7 +38,9 @@
 	"dependencies": {
 		"aws-sdk": "^2.383.0",
 		"chalk": "^2.4.1",
+		"glob": "^7.1.3",
 		"js-yaml": "^3.12.0",
+		"node-native-zip": "^1.1.0",
 		"ora": "^3.0.0",
 		"yargs": "^12.0.5",
 		"yargs-interactive": "^2.0.1"
@@ -63,8 +65,19 @@
 		"rules": {
 			"no-plusplus": 0,
 			"no-tabs": 0,
-			"indent": [2, "tab", { "SwitchCase": 1 }],
-			"padded-blocks": [2, { "classes": "always" }],
+			"indent": [
+				2,
+				"tab",
+				{
+					"SwitchCase": 1
+				}
+			],
+			"padded-blocks": [
+				2,
+				{
+					"classes": "always"
+				}
+			],
 			"global-require": 0,
 			"import/no-dynamic-require": 0
 		}

@@ -15,7 +15,7 @@ class BuildTask extends Task {
 
 		this.log.info(`├─ Looking for templates in the ${this.options.entry} folder...`);
 		this.findTemplates();
-		if (this.outputArtifacts.files.length === 0) {
+		if (this.output.files.length === 0) {
 			return;
 		}
 
@@ -23,9 +23,9 @@ class BuildTask extends Task {
 		this.processTemplates();
 
 		this.saveFinalTemplate();
-		this.log.info(`└─ Final template: ${chalk.magenta(this.outputArtifacts.templateFile)}\n`);
+		this.log.info(`└─ Final template: ${chalk.magenta(this.output.templateFile)}\n`);
 
-		next(this.outputArtifacts);
+		next(this.output);
 	}
 
 	findTemplates() {
@@ -45,7 +45,7 @@ class BuildTask extends Task {
 			this.log.info('└─ Found no templates in the folder...');
 		}
 
-		this.outputArtifacts.files = files;
+		this.output.files = files;
 	}
 
 	walkTemplates(dir, list) {
@@ -66,7 +66,7 @@ class BuildTask extends Task {
 	processTemplates() {
 		const template = {};
 
-		this.outputArtifacts.files.forEach((file) => {
+		this.output.files.forEach((file) => {
 			const doc = this.processTemplate(file);
 			if (!doc) {
 				return;
@@ -92,7 +92,7 @@ class BuildTask extends Task {
 			});
 		});
 
-		this.outputArtifacts.template = template;
+		this.output.template = template;
 	}
 
 	processTemplate(file) {
@@ -131,9 +131,9 @@ class BuildTask extends Task {
 			? filename
 			: path.resolve(process.cwd(), filename);
 
-		const data = JSON.stringify(this.outputArtifacts.template, '', 4);
+		const data = JSON.stringify(this.output.template, '', 4);
 		fs.writeFileSync(filename, data, { encoding: 'utf8' });
-		this.outputArtifacts.templateFile = filename;
+		this.output.templateFile = filename;
 	}
 
 }

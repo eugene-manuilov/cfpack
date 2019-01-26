@@ -8,26 +8,42 @@ class Init extends Task {
 
 	/* eslint-disable class-methods-use-this */
 	run(next) {
+		const defaults = {
+			stackname: 'my-stack',
+			stackRegion: 'us-east-1',
+			entryFolder: 'cloudformation',
+			outputFile: 'cloudformation.json',
+		};
+
+		const filename = Init.getConfigFilename();
+		if (fs.existsSync(filename)) {
+			const module = require(filename);
+			defaults.stackname = module.stack.name;
+			defaults.stackRegion = module.stack.region;
+			defaults.entryFolder = module.entry;
+			defaults.outputFile = module.output;
+		}
+
 		const options = {
 			interactive: { default: true },
 			stackName: {
 				type: 'input',
-				default: 'my-stack',
+				default: defaults.stackname,
 				describe: 'Enter stack name',
 			},
 			stackRegion: {
 				type: 'input',
-				default: 'us-east-1',
+				default: defaults.stackRegion,
 				describe: 'Enter region',
 			},
 			entryFolder: {
 				type: 'input',
-				default: 'cloudformation',
+				default: defaults.entryFolder,
 				describe: 'Templates folder name',
 			},
 			outputFile: {
 				type: 'input',
-				default: 'cloudformation.json',
+				default: defaults.outputFile,
 				describe: 'File name of combined template',
 			},
 		};
@@ -42,8 +58,12 @@ class Init extends Task {
 	}
 	/* eslint-enable */
 
+	static getConfigFilename() {
+		return path.resolve(process.cwd(), 'cfpack.config.js');
+	}
+
 	static saveConfig(results) {
-		const filename = path.resolve(process.cwd(), 'cfpack.config.js');
+		const filename = Init.getConfigFilename();
 		const stream = fs.createWriteStream(filename, { encoding: 'utf8' });
 
 		stream.write(`module.exports = {
@@ -68,10 +88,26 @@ class Init extends Task {
 			// 	{
 			// 		ParameterKey: 'my-parameter',
 			// 		ParameterValue: 'my-value',
-			// 	}
-			// ]
-		}
-	}
+			// 	},
+			// ],
+		},
+		/* uncomment if you need to upload artifacts before creating/updating your stack */
+		// artifacts: [
+		// 	{
+		// 		bucket: 's3-bucket-name',
+		// 		files: {
+		// 			'location/one/': 'local/files/**/*',
+		// 			'location/two.zip': {
+		// 				baseDir: 'local/files/',
+		// 				include: '*.xml',
+		// 				exclude: 'test.xml',
+		// 				path: '**/*',
+		// 				compression: 'zip', // zip | none
+		// 			},
+		// 		},
+		// 	},
+		// ],
+	},
 };
 `);
 		stream.close();
