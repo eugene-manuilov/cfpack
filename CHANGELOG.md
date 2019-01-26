@@ -1,6 +1,6 @@
 # Change Log
 
-## v1.2.0 (2019-xx-xx)
+## v1.2.0 (2019-01-26)
 
 - Added `artifacts` command to upload files to a s3 bucket.
 - Added spinner to the terminal output to indicate process.
