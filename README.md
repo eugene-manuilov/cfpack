@@ -69,7 +69,11 @@ The `build` command will loop through the entry folder, find all files in it, re
 
 #### Deploy
 
-The `deploy` command executes build task first to create resulting template and then use it to create or update CloudFormation stack using AWS Node.js SDK. The command checks whether or not a stack exists to determine what action is required to create or to update the stack.
+The `deploy` command executes build task first to create resulting template and then use it to create or update CloudFormation stack using AWS Node.js SDK. The command checks whether or not a stack exists to determine what action is required to create or to update the stack. This command will also upload artifacts if you define it in the `cfpack.config.js` file to make sure that CloudFormation stack can properly provision resoureces like lambda functions or appsync graphql API or resolvers.
+
+#### Artifacts
+
+The `artifacts` command allows you to upload artifacts that are defined in the config file. You can define as many artifacts as you need.
 
 #### Delete
 
@@ -77,7 +81,7 @@ Finally, the `delete` command just checks if the stack exists and then calls API
 
 ## Config file
 
-#### Parameters
+### Parameters
 
 As it has been said above, the config file is pretty obvious and self explanatory. It allows you to define your stack information and provide additional details like parameters or capabilities. Thus if your template uses input parameters, you can define them in the config file in the `stack` > `params` section as shown below:
 
@@ -139,7 +143,129 @@ module.exports = {
 };
 ```
 
-#### IAM roles
+### Artifacts
+
+If your templates have resources (like lambda functions, appsync graphql schema or resolvers, etc) that rely on artifacts located in a s3 bucket, then you can define what files need to be uploaded during deployment process. Let's consider that you have a template like this:
+
+```
+Resources:
+  Schema:
+    Type: AWS::AppSync::GraphQLSchema
+    Properties:
+      ApiId: ...
+      DefinitionS3Location: s3://my-bucket/graphql/schema.graphql
+  ResolverA:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: ...
+      DataSourceName: ...
+      TypeName: typeA
+      FieldName: field1
+      RequestMappingTemplateS3Location: s3://my-bucket/graphql/resolvers/typeA/field1/request.txt
+      ResponseMappingTemplateS3Location: s3://my-bucket/graphql/resolvers/typeA/field1/response.txt
+  ResolverB:
+    Type: AWS::AppSync::Resolver
+    Properties:
+      ApiId: ...
+      DataSourceName: ...
+      TypeName: typeB
+      FieldName: field2
+      RequestMappingTemplateS3Location: s3://my-bucket/graphql/resolvers/typeB/field2/request.txt
+      ResponseMappingTemplateS3Location: s3://my-bucket/graphql/resolvers/typeB/field2/response.txt
+  LambdaFunctionA:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Handler: index.handler
+      Role: ...
+      Code: 
+        S3Bucket: my-bucket
+        S3Key: lambdas/function-a.zip
+      Runtime: nodejs8.10
+      ...
+  LambdaFunctionB:
+    Type: AWS::Lambda::Function
+    Properties: 
+      Handler: index.handler
+      Role: ...
+      Code: 
+        S3Bucket: my-bucket
+        S3Key: lambdas/function-b.zip
+      Runtime: nodejs8.10
+      ...
+```
+
+And the structure of your project looks like this:
+
+```
+/path/to/your/project
+  ├─ package.json
+  ├─ package-lock.json
+  ├─ cfpack.config.json
+  ├─ graphql
+  │   ├─ schema.graphql
+  │   └─ resolvers
+  │       ├─ typeA
+  │       │   ├─ field1
+  │       │   │   ├─ request.txt
+  │       │   │   └─ response.txt
+  │       │   └─ ...
+  │       ├─ typeB
+  │       │   ├─ field2
+  │       │   │   ├─ request.txt
+  │       │   │   └─ response.txt
+  │       │   └─ ...
+  │       └─ ...
+  ├─ lambdas
+  │   ├─ functionA
+  │   │   ├─ src
+  │   │   ├─ node_modules
+  │   │   ├─ package.json
+  │   │   └─ package-lock.json
+  │   └─ functionB
+  │       ├─ src
+  │       ├─ node_modules
+  │       ├─ package.json
+  │       └─ package-lock.json
+  └─ ...
+```
+
+Then you can update the config file to upoad all artifacts like this:
+
+```
+module.exports = {
+    ...
+    stack: {
+        name: "my-stack",
+        region: "us-east-1",
+        params: {
+            ...
+        },
+        artifacts: [
+            {
+                bucket: "my-bucket",
+                files: {
+                    "graphql/": {
+                        baseDir: "graphql",
+                        path: "**/*"
+                    },
+                    "lambdas/function-a.zip": {
+                        baseDir: "lambdas/functionA",
+                        path: "**/*",
+                        compression: "zip"
+                    },
+                    "lambdas/function-b.zip": {
+                        baseDir: "lambdas/functionB",
+                        path: "**/*",
+                        compression: "zip"
+                    }
+                }
+            }
+        ]
+    }
+};
+```
+
+### IAM roles
 
 Please, pay attention that if your CloudFormation template contains IAM roles or policies you must explicity acknowledge that it contains certain capabilities in order for AWS CloudFormation to create or update the stack. To do it, just add `Capabilities` to your config file as shown below:
 

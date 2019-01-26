@@ -5,7 +5,7 @@ const ApiTask = require('../ApiTask');
 
 class DeployTask extends ApiTask {
 
-	run() {
+	run(next) {
 		this.log.message('Deploying template file...');
 
 		const { stack } = this.options;
@@ -17,9 +17,9 @@ class DeployTask extends ApiTask {
 		this.log.info(`├─ Checking whether ${stack.name} stack exists...`);
 		this.cloudformation.describeStacks({ StackName: stack.name }, (err) => {
 			if (err) {
-				this.createStack();
+				this.createStack(next);
 			} else {
-				this.updateStack();
+				this.updateStack(next);
 			}
 		});
 	}
@@ -28,33 +28,35 @@ class DeployTask extends ApiTask {
 		const { stack } = this.options;
 		return Object.assign({}, stack.params, {
 			StackName: stack.name,
-			TemplateBody: JSON.stringify(this.inputArtifacts.template),
+			TemplateBody: JSON.stringify(this.input.template),
 			ClientRequestToken: this.taskUUID,
 		});
 	}
 
-	createStack() {
-		this.log.info(`└─ Stack doesn't exist. Creating a new one...\n`);
+	createStack(next) {
+		this.log.info('└─ Stack doesn\'t exist. Creating a new one...\n');
 
 		const params = this.getStackParams();
 		const callback = this.getStackRequestCallback('Stack is creating...', () => {
 			this.cloudformation.waitFor('stackCreateComplete', { StackName: params.StackName }, () => {
 				this.stopPollingEvents();
 				this.log.message('Stack has been created.');
+				next();
 			});
 		});
 
 		this.cloudformation.createStack(params, callback);
 	}
 
-	updateStack() {
-		this.log.info(`└─ Stack exists, updating...\n`);
+	updateStack(next) {
+		this.log.info('└─ Stack exists, updating...\n');
 
 		const params = this.getStackParams();
 		const callback = this.getStackRequestCallback('Stack is updating...', () => {
 			this.cloudformation.waitFor('stackUpdateComplete', { StackName: params.StackName }, () => {
 				this.stopPollingEvents();
 				this.log.message('Stack has been updated.');
+				next();
 			});
 		});
 
@@ -66,6 +68,7 @@ class DeployTask extends ApiTask {
 			if (err) {
 				this.log.error(`${err.code}: ${err.message}`, false);
 				this.log.info(`└─ RequestId: ${chalk.magenta(err.requestId)}`);
+				this.log.stop();
 				process.exit(1);
 			} else {
 				this.log.message(message);

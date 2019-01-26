@@ -9,8 +9,8 @@ class Task {
 		}
 
 		this.taskUUID = token.join('-');
-		this.inputArtifacts = {};
-		this.outputArtifacts = {};
+		this.input = {};
+		this.output = {};
 		this.options = {};
 	}
 
@@ -22,17 +22,15 @@ class Task {
 		this.log = log;
 	}
 
-	setInputArtifacts(artifacts) {
-		this.inputArtifacts = artifacts;
+	setData(input) {
+		this.input = input;
 	}
 
-	getOutputArtifacts() {
-		return this.outputArtifacts;
-	}
-
+	/* eslint-disable class-methods-use-this */
 	run() {
 		throw new Error('The run method is not implemented.');
 	}
+	/* eslint-enable */
 
 }
 

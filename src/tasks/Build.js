@@ -10,20 +10,22 @@ const intrinsicFunctions = require('../utils/intrinsic-functions-schema');
 
 class BuildTask extends Task {
 
-	run() {
+	run(next) {
 		this.log.message('Build template file...');
 
 		this.log.info(`├─ Looking for templates in the ${this.options.entry} folder...`);
 		this.findTemplates();
-		if (this.outputArtifacts.files.length === 0) {
+		if (this.output.files.length === 0) {
 			return;
 		}
 
-		this.log.info(`├─ Processing found templates...`);
+		this.log.info('├─ Processing found templates...');
 		this.processTemplates();
 
 		this.saveFinalTemplate();
-		this.log.info(`└─ Final template: ${chalk.magenta(this.outputArtifacts.templateFile)}\n`);
+		this.log.info(`└─ Final template: ${chalk.magenta(this.output.templateFile)}\n`);
+
+		next(this.output);
 	}
 
 	findTemplates() {
@@ -43,26 +45,28 @@ class BuildTask extends Task {
 			this.log.info('└─ Found no templates in the folder...');
 		}
 
-		this.outputArtifacts.files = files;
+		this.output.files = files;
 	}
 
 	walkTemplates(dir, list) {
+		let newlist = [...list];
+
 		fs.readdirSync(dir).forEach((file) => {
 			const filename = path.join(dir, file);
 			if (fs.statSync(filename).isDirectory()) {
-				list = this.walkTemplates(filename, list);
+				newlist = this.walkTemplates(filename, list);
 			} else {
-				list.push(filename);
+				newlist.push(filename);
 			}
 		});
 
-		return list;
+		return newlist;
 	}
 
 	processTemplates() {
 		const template = {};
 
-		this.outputArtifacts.files.forEach((file) => {
+		this.output.files.forEach((file) => {
 			const doc = this.processTemplate(file);
 			if (!doc) {
 				return;
@@ -71,7 +75,8 @@ class BuildTask extends Task {
 			Object.keys(doc).forEach((group) => {
 				if (typeof doc[group] === 'object') {
 					if (doc[group].constructor.name === 'Date') {
-						template[group] = doc[group].toISOString().split('T')[0];
+						const [dateString] = doc[group].toISOString().split('T');
+						template[group] = dateString;
 					} else {
 						if (!template[group]) {
 							template[group] = {};
@@ -87,7 +92,7 @@ class BuildTask extends Task {
 			});
 		});
 
-		this.outputArtifacts.template = template;
+		this.output.template = template;
 	}
 
 	processTemplate(file) {
@@ -96,7 +101,7 @@ class BuildTask extends Task {
 		try {
 			const doc = JSON.parse(content);
 			return doc;
-		} catch(e) {
+		} catch (e) {
 			// do nothing
 		}
 
@@ -126,9 +131,9 @@ class BuildTask extends Task {
 			? filename
 			: path.resolve(process.cwd(), filename);
 
-		const data = JSON.stringify(this.outputArtifacts.template, '', 4);
+		const data = JSON.stringify(this.output.template, '', 4);
 		fs.writeFileSync(filename, data, { encoding: 'utf8' });
-		this.outputArtifacts.templateFile = filename;
+		this.output.templateFile = filename;
 	}
 
 }

@@ -8,8 +8,8 @@ class ApiTask extends Task {
 		const date = new Date(timestamp);
 
 		const hour = date.getHours().toString().padStart(2, '0');
-		const min  = date.getMinutes().toString().padStart(2, '0');
-		const sec  = date.getSeconds().toString().padStart(2, '0');
+		const min = date.getMinutes().toString().padStart(2, '0');
+		const sec = date.getSeconds().toString().padStart(2, '0');
 
 		return `${hour}:${min}:${sec}`;
 	}
@@ -40,9 +40,12 @@ class ApiTask extends Task {
 
 	getResourceMaxLength() {
 		if (!this.resourceMaxLength) {
+			const { template } = this.input || {};
+			const { Resources } = template || {};
 			this.resourceMaxLength = Math.max(
+				35, // not less than 35 characters
 				this.options.stack.name.length,
-				...Object.keys(this.inputArtifacts.template.Resources).map(item => item.length),
+				...Object.keys(Resources || []).map(item => item.length),
 			);
 		}
 
@@ -50,7 +53,14 @@ class ApiTask extends Task {
 	}
 
 	displayEvent(event) {
-		const { EventId, ClientRequestToken, Timestamp, LogicalResourceId, ResourceStatus, ResourceStatusReason } = event;
+		const {
+			EventId,
+			ClientRequestToken,
+			Timestamp,
+			LogicalResourceId,
+			ResourceStatus,
+			ResourceStatusReason,
+		} = event;
 
 		if (ClientRequestToken === this.taskUUID && !this.events[EventId]) {
 			this.events[EventId] = true;
