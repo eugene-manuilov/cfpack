@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.2.1 (2019-06-14)
+
+- Updated dependencies to fix vulnerability issues found in dependant packages.
+
 ## v1.2.0 (2019-01-26)
 
 - Added `artifacts` command to upload files to a s3 bucket.
