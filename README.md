@@ -30,7 +30,7 @@ Then you can create shortcuts in your `package.json` file:
 	...
 	"scripts": {
 		"stack:build": "cfpack build",
-		"stack:deploy: "cfpack deploy",
+		"stack:deploy": "cfpack deploy",
 		"stack:delete": "cfpack delete"
 	},
 	...
