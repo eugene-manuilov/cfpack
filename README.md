@@ -37,6 +37,16 @@ Then you can create shortcuts in your `package.json` file:
 }
 ```
 
+### Enable bash/zsh-completion shortcuts
+
+If you want to enable bash/zsh-completion shortcuts in your terminal, then you need to run `cfpack completion` command and add generated script to your `.bashrc` or `.bash_profile` (or `.zshrc` for zsh). You can do it by running the following command:
+
+```
+cfpack completion >> ~/.bashrc
+```
+
+Once completion script is added, you need to logout and then login back to make sure that terminal reads the script and start using completion for cfpack commands.
+
 ## Getting Started
 
 Before you start using this tool, you need to create a configuration file in the root of your project. Just run `cfpack init` command and it will create `cfpack.config.js` file with default settings. The file is pretty obvisous and specifies a folder with template files, a path to resulting template, CloudFormation stack information and the like. Just amend values if you need to change something and it will use what you want.

@@ -3,6 +3,7 @@
 ## v1.3.0 (2019-07-19)
 
 - Updated dependencies to fix vulnerability issues found in dependant packages.
+- Added bash/zsh-completion shortcuts for commands.
 
 ## v1.2.1 (2019-06-14)
 
