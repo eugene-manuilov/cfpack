@@ -1,5 +1,7 @@
 # cfpack
 
+[![npm version](https://badge.fury.io/js/cfpack.js.svg)](https://badge.fury.io/js/cfpack.js) 
+
 A small CLI tool that can help you to deal with huge CloudFormation templates by splitting it into multiple smaller templates. Using this tool you can also build sharable drop-in templates that you can share across your projects.
 
 > Note: this project is in its early stages and may lack some functionality or may have some bugs. Please, create a new issue if you find something. It will help to make this tool better.
