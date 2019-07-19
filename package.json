@@ -36,19 +36,19 @@
 		"prepublish": "npm run lint"
 	},
 	"dependencies": {
-		"aws-sdk": "^2.476.0",
+		"aws-sdk": "^2.495.0",
 		"chalk": "^2.4.2",
 		"glob": "^7.1.4",
 		"js-yaml": "^3.13.1",
 		"node-native-zip": "^1.1.0",
 		"ora": "^3.4.0",
-		"yargs": "^12.0.5",
+		"yargs": "^13.3.0",
 		"yargs-interactive": "^2.1.0"
 	},
 	"devDependencies": {
-		"eslint": "^5.16.0",
-		"eslint-config-airbnb-base": "^13.1.0",
-		"eslint-plugin-import": "^2.17.3"
+		"eslint": "^6.0.1",
+		"eslint-config-airbnb-base": "^13.2.0",
+		"eslint-plugin-import": "^2.18.1"
 	},
 	"eslintConfig": {
 		"extends": [
