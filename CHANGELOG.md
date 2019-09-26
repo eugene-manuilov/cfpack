@@ -3,6 +3,8 @@
 ## v1.3.0 (2019-07-19)
 
 - Updated dependencies to fix vulnerability issues found in dependant packages.
+- Updated build command to validate the final template.
+- Added condition functions to the yaml parser schema.
 - Added bash/zsh-completion shortcuts for commands.
 - Added sample project that demonstrates how to use cfpack to deploy Appsync + Lambda infrastructure.
 

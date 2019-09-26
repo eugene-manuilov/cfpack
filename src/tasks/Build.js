@@ -2,6 +2,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 
+const AWS = require('aws-sdk');
 const yaml = require('js-yaml');
 const chalk = require('chalk');
 
@@ -22,10 +23,13 @@ class BuildTask extends Task {
 		this.log.info('├─ Processing found templates...');
 		this.processTemplates();
 
-		this.saveFinalTemplate();
-		this.log.info(`└─ Final template: ${chalk.magenta(this.output.templateFile)}\n`);
-
-		next(this.output);
+		this.log.info('├─ Validating final template...');
+		this.validateFinalTemplate(() => {
+			this.saveFinalTemplate();
+			this.log.info(`└─ Final template: ${chalk.magenta(this.output.templateFile)}\n`);
+	
+			next(this.output);
+		});
 	}
 
 	findTemplates() {
@@ -117,6 +121,25 @@ class BuildTask extends Task {
 		}
 
 		return false;
+	}
+
+	validateFinalTemplate(callback) {
+		const { stack } = this.options;
+		const cloudformation = new AWS.CloudFormation({
+			apiVersion: '2010-05-15',
+			region: stack.region,
+		});
+
+		cloudformation.validateTemplate({ TemplateBody: JSON.stringify(this.output.template, '', 4) }, (err) => {
+			if (err) {
+				this.log.error(`├─ ${err.message}`, false);
+				this.log.error(`└─ RequestId: ${chalk.magenta(err.requestId)}`, false);
+				this.log.stop();
+				process.exit(1);
+			} else {
+				callback();
+			}
+		});
 	}
 
 	saveFinalTemplate() {
