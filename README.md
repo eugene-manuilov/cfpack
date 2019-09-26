@@ -298,7 +298,7 @@ module.exports = {
 
 ## Contribute
 
-Want to help or have a suggestion? Open a [new ticket](https://github.com/eugene-manuilov/cfpack/issues/new) and we can discuss it or submit pull request.
+Want to help or have a suggestion? Open a [new ticket](https://github.com/eugene-manuilov/cfpack/issues/new) and we can discuss it or submit a pull request.
 
 ## LICENSE
 
