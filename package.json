@@ -38,7 +38,6 @@
 	"dependencies": {
 		"aws-sdk": "^2.536.0",
 		"chalk": "^2.4.2",
-		"eslint-config-airbnb-base": "^14.0.0",
 		"glob": "^7.1.4",
 		"js-yaml": "^3.13.1",
 		"node-native-zip": "^1.1.0",
@@ -48,6 +47,7 @@
 	},
 	"devDependencies": {
 		"eslint": "^6.4.0",
+		"eslint-config-airbnb-base": "^14.0.0",
 		"eslint-plugin-import": "^2.18.2"
 	},
 	"eslintConfig": {
