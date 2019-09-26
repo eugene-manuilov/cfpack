@@ -27,7 +27,6 @@ class BuildTask extends Task {
 		this.validateFinalTemplate(() => {
 			this.saveFinalTemplate();
 			this.log.info(`└─ Final template: ${chalk.magenta(this.output.templateFile)}\n`);
-	
 			next(this.output);
 		});
 	}

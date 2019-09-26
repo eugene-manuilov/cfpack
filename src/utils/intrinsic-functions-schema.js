@@ -29,8 +29,8 @@ const schema = {
 
 Object.keys(schema).forEach((kind) => {
 	schema[kind].forEach((name) => {
-		const fn = name === 'Ref' ? name : 'Fn::' + name;
-		const type = new yaml.Type('!' + name, { kind, construct: data => ({ [fn]: data }) });
+		const fn = name === 'Ref' ? name : `Fn::${name}`;
+		const type = new yaml.Type(`!${name}`, { kind, construct: (data) => ({ [fn]: data }) });
 
 		types.push(type);
 	});

@@ -45,7 +45,7 @@ class ApiTask extends Task {
 			this.resourceMaxLength = Math.max(
 				35, // not less than 35 characters
 				this.options.stack.name.length,
-				...Object.keys(Resources || []).map(item => item.length),
+				...Object.keys(Resources || []).map((item) => item.length),
 			);
 		}
 

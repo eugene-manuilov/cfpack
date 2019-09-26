@@ -26,11 +26,12 @@ class DeployTask extends ApiTask {
 
 	getStackParams() {
 		const { stack } = this.options;
-		return Object.assign({}, stack.params, {
+		return {
+			...stack.params,
 			StackName: stack.name,
 			TemplateBody: JSON.stringify(this.input.template),
 			ClientRequestToken: this.taskUUID,
-		});
+		};
 	}
 
 	createStack(next) {
