@@ -54,7 +54,7 @@ class BuildTask extends Task {
 		fs.readdirSync(dir).forEach((file) => {
 			const filename = path.join(dir, file);
 			if (fs.statSync(filename).isDirectory()) {
-				newlist = this.walkTemplates(filename, list);
+				newlist = [...newlist, ...this.walkTemplates(filename, list)];
 			} else {
 				newlist.push(filename);
 			}
