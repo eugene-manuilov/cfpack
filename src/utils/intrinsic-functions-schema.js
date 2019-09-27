@@ -13,7 +13,6 @@ const schema = {
 		'GetAtt',
 		'GetAZs',
 		'ImportValue',
-		'Split',
 		'Sub',
 		'Ref',
 		'Condition',
@@ -28,17 +27,34 @@ const schema = {
 		'If',
 		'Not',
 		'Or',
+		'Split',
 	],
 	mapping: [
 		'Transform',
 	],
 };
 
+const constructs = {
+	GetAtt(data) {
+		const parts = data.split('.');
+		return {
+			'Fn::GetAtt': [
+				parts[0],
+				parts.slice(1).join('.'),
+			],
+		};
+	},
+};
+
 Object.keys(schema).forEach((kind) => {
 	schema[kind].forEach((name) => {
 		const fn = specialTypes[name] || `Fn::${name}`;
-		const type = new yaml.Type(`!${name}`, { kind, construct: (data) => ({ [fn]: data }) });
+		const params = {
+			kind,
+			construct: constructs[name] || ((data) => ({ [fn]: data })),
+		};
 
+		const type = new yaml.Type(`!${name}`, params);
 		types.push(type);
 	});
 });

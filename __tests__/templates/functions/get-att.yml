@@ -1,0 +1,22 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getatt.html#intrinsic-function-reference-getatt-example2
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  myELB:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      AvailabilityZones:
+        - eu-west-1a
+      Listeners:
+        - LoadBalancerPort: '80'
+          InstancePort: '80'
+          Protocol: HTTP
+  myELBIngressGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ELB ingress group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          SourceSecurityGroupOwnerId: !GetAtt myELB.SourceSecurityGroup.OwnerAlias
+          SourceSecurityGroupName: !GetAtt myELB.SourceSecurityGroup.GroupName

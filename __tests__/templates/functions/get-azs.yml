@@ -1,0 +1,18 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getavailabilityzones.html#w2ab1c21c24c36c17b2
+evaluateRegions:
+  - Fn::GetAZs: ""
+  - Fn::GetAZs:
+      Ref: "AWS::Region"
+  - Fn::GetAZs: us-east-1
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-getavailabilityzones.html#w2ab1c21c24c36c17b4
+mySubnet: 
+  Type: "AWS::EC2::Subnet"
+  Properties: 
+    VpcId: 
+      !Ref VPC
+    CidrBlock: 10.0.0.0/24
+    AvailabilityZone: 
+      Fn::Select: 
+        - 0
+        - Fn::GetAZs: ""

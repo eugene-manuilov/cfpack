@@ -1,0 +1,5 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-ref.html#ref-example
+MyEIP:
+  Type: "AWS::EC2::EIP"
+  Properties:
+    InstanceId: !Ref MyEC2Instance

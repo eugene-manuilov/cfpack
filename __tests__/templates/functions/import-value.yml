@@ -1,0 +1,5 @@
+Resources:
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !ImportValue ClusterName

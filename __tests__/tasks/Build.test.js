@@ -11,6 +11,15 @@ describe('BuildTask', () => {
 		'base64.yml',
 		'cidr.yml',
 		'find-in-map.yml',
+		'get-att.yml',
+		'get-azs.yml',
+		'import-value.yml',
+		'join.yml',
+		'select.yml',
+		'split.yml',
+		'transform.yml',
+		'ref.yml',
+		// @todo: add template to test !Sub function
 	];
 
 	test.each(templates)('::processTemplate --> {%s}', (template) => {

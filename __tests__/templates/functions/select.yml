@@ -1,0 +1,14 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-select.html#w2ab1c21c24c51c13b2
+Basic: !Select [ "1", [ "apples", "grapes", "oranges", "mangoes" ] ]
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-select.html#w2ab1c21c24c51c13b4
+Subnet0: 
+  Type: "AWS::EC2::Subnet"
+  Properties: 
+    VpcId: !Ref VPC
+    CidrBlock: !Select [ 0, !Ref DbSubnetIpBlocks ]
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-select.html#w2ab1c21c24c51c13b6
+AvailabilityZone: !Select 
+  - 0
+  - Fn::GetAZs: !Ref 'AWS::Region'

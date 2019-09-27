@@ -1,0 +1,8 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-split.html#w2ab1c21c24c55c13b4
+SimpleList: !Split [ "|" , "a|b|c" ]
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-split.html#w2ab1c21c24c55c13b6
+WithEmptyValues: !Split [ "|" , "a||c|" ]
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-split.html#w2ab1c21c24c55c13b8
+ImportedOutputValue: !Select [2, !Split [",", !ImportValue AccountSubnetIDs]]
