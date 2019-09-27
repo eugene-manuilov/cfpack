@@ -82,9 +82,9 @@ class BuildTask extends Task {
 				const error = this.lastError.toString().split('\n').join('\n│  ');
 				this.log.info(`├─ Error processing ${file} template: ${error}`);
 				return;
-			} else {
-				this.log.info(`├─ Processed ${file} template...`);
 			}
+
+			this.log.info(`├─ Processed ${file} template...`);
 
 			Object.keys(doc).forEach((group) => {
 				if (typeof doc[group] === 'object') {

@@ -1,0 +1,2 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-base64.html#w2ab1c21c24c12c11
+Fn::Base64: AWS CloudFormation
