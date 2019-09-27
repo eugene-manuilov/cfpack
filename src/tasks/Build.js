@@ -11,6 +11,11 @@ const intrinsicFunctions = require('../utils/intrinsic-functions-schema');
 
 class BuildTask extends Task {
 
+	constructor() {
+		super();
+		this.lastError = false;
+	}
+
 	run(next) {
 		this.log.message('Build template file...');
 
@@ -70,9 +75,15 @@ class BuildTask extends Task {
 		const template = {};
 
 		this.output.files.forEach((file) => {
+			this.lastError = false;
+
 			const doc = this.processTemplate(file);
 			if (!doc) {
+				const error = this.lastError.toString().split('\n').join('\n│  ');
+				this.log.info(`├─ Error processing ${file} template: ${error}`);
 				return;
+			} else {
+				this.log.info(`├─ Processed ${file} template...`);
 			}
 
 			Object.keys(doc).forEach((group) => {
@@ -102,21 +113,11 @@ class BuildTask extends Task {
 		const content = fs.readFileSync(file, 'utf8');
 
 		try {
-			const doc = JSON.parse(content);
-			return doc;
+			return content.trim(0).charAt(0) === '{'
+				? JSON.parse(content)
+				: yaml.safeLoad(content, { schema: intrinsicFunctions });
 		} catch (e) {
-			// do nothing
-		}
-
-		try {
-			const doc = yaml.safeLoad(content, { schema: intrinsicFunctions });
-
-			this.log.info(`├─ Processed ${file} template...`);
-
-			return doc;
-		} catch (e) {
-			const error = e.toString().split('\n').join('\n│  ');
-			this.log.info(`├─ Error processing ${file} template: ${error}`);
+			this.lastError = e;
 		}
 
 		return false;

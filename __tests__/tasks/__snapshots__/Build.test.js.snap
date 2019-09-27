@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BuildTask ::processTemplate --> {and.yml} 1`] = `
+"{
+  \\"MyAndCondition\\": {
+    \\"Fn::And\\": [
+      {
+        \\"Fn::Equals\\": [
+          \\"sg-mysggroup\\",
+          {
+            \\"Ref\\": \\"ASecurityGroup\\"
+          }
+        ]
+      },
+      {
+        \\"Condition\\": \\"SomeOtherCondition\\"
+      }
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {equals.yml} 1`] = `
+"{
+  \\"UseProdCondition\\": {
+    \\"Fn::Equals\\": [
+      {
+        \\"Ref\\": \\"EnvironmentType\\"
+      },
+      \\"prod\\"
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {if.yml} 1`] = `
+"{
+  \\"SecurityGroups\\": [
+    {
+      \\"Fn::If\\": [
+        \\"CreateNewSecurityGroup\\",
+        {
+          \\"Ref\\": \\"NewSecurityGroup\\"
+        },
+        {
+          \\"Ref\\": \\"ExistingSecurityGroup\\"
+        }
+      ]
+    }
+  ],
+  \\"Outputs\\": {
+    \\"SecurityGroupId\\": {
+      \\"Description\\": \\"Group ID of the security group used.\\",
+      \\"Value\\": {
+        \\"Fn::If\\": [
+          \\"CreateNewSecurityGroup\\",
+          {
+            \\"Ref\\": \\"NewSecurityGroup\\"
+          },
+          {
+            \\"Ref\\": \\"ExistingSecurityGroup\\"
+          }
+        ]
+      }
+    }
+  },
+  \\"MyDB\\": {
+    \\"Type\\": \\"AWS::RDS::DBInstance\\",
+    \\"Properties\\": {
+      \\"AllocatedStorage\\": 5,
+      \\"DBInstanceClass\\": \\"db.m1.small\\",
+      \\"Engine\\": \\"MySQL\\",
+      \\"EngineVersion\\": 5.5,
+      \\"MasterUsername\\": {
+        \\"Ref\\": \\"DBUser\\"
+      },
+      \\"MasterUserPassword\\": {
+        \\"Ref\\": \\"DBPassword\\"
+      },
+      \\"DBParameterGroupName\\": {
+        \\"Ref\\": \\"MyRDSParamGroup\\"
+      },
+      \\"DBSnapshotIdentifier\\": {
+        \\"Fn::If\\": [
+          \\"UseDBSnapshot\\",
+          {
+            \\"Ref\\": \\"DBSnapshotName\\"
+          },
+          {
+            \\"Ref\\": \\"AWS::NoValue\\"
+          }
+        ]
+      }
+    }
+  },
+  \\"UpdatePolicy\\": {
+    \\"AutoScalingRollingUpdate\\": {
+      \\"Fn::If\\": [
+        \\"RollingUpdates\\",
+        {
+          \\"MaxBatchSize\\": 2,
+          \\"MinInstancesInService\\": 2,
+          \\"PauseTime\\": \\"PT0M30S\\"
+        },
+        {
+          \\"Ref\\": \\"AWS::NoValue\\"
+        }
+      ]
+    }
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {not.yml} 1`] = `
+"{
+  \\"MyNotCondition\\": {
+    \\"Fn::Not\\": [
+      {
+        \\"Fn::Equals\\": [
+          {
+            \\"Ref\\": \\"EnvironmentType\\"
+          },
+          \\"prod\\"
+        ]
+      }
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {or.yml} 1`] = `
+"{
+  \\"MyOrCondition\\": {
+    \\"Fn::Or\\": [
+      {
+        \\"Fn::Equals\\": [
+          \\"sg-mysggroup\\",
+          {
+            \\"Ref\\": \\"ASecurityGroup\\"
+          }
+        ]
+      },
+      {
+        \\"Condition\\": \\"SomeOtherCondition\\"
+      }
+    ]
+  }
+}"
+`;

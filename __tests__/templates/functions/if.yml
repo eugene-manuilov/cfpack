@@ -1,0 +1,34 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-conditions.html#w2ab1c21c24c21c39b8b4
+SecurityGroups:
+  - !If [CreateNewSecurityGroup, !Ref NewSecurityGroup, !Ref ExistingSecurityGroup]
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-conditions.html#w2ab1c21c24c21c39b8b6
+Outputs:
+  SecurityGroupId: 
+    Description: Group ID of the security group used.
+    Value: !If [CreateNewSecurityGroup, !Ref NewSecurityGroup, !Ref ExistingSecurityGroup]
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-conditions.html#w2ab1c21c24c21c39b8b8
+MyDB:
+  Type: "AWS::RDS::DBInstance"
+  Properties: 
+    AllocatedStorage: 5
+    DBInstanceClass: db.m1.small
+    Engine: MySQL
+    EngineVersion: 5.5
+    MasterUsername: !Ref DBUser
+    MasterUserPassword: !Ref DBPassword
+    DBParameterGroupName: !Ref MyRDSParamGroup
+    DBSnapshotIdentifier:
+      !If [UseDBSnapshot, !Ref DBSnapshotName, !Ref "AWS::NoValue"]
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-conditions.html#w2ab1c21c24c21c39b8c10
+UpdatePolicy:
+  AutoScalingRollingUpdate:
+    !If 
+      - RollingUpdates
+      -
+        MaxBatchSize: 2
+        MinInstancesInService: 2
+        PauseTime: PT0M30S
+      - !Ref "AWS::NoValue"

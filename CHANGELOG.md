@@ -7,6 +7,8 @@
 - Added condition functions to the yaml parser schema.
 - Added bash/zsh-completion shortcuts for commands.
 - Added sample project that demonstrates how to use cfpack to deploy Appsync + Lambda infrastructure.
+- Added unit tests to check that build task properly parses yml files.
+- Fixed bug that didn't allow to keep templates in multiple folders.
 
 ## v1.2.1 (2019-06-14)
 

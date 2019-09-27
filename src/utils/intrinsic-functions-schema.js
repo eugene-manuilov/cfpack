@@ -1,6 +1,12 @@
 const yaml = require('js-yaml');
 
 const types = [];
+
+const specialTypes = {
+	Ref: 'Ref',
+	Condition: 'Condition',
+};
+
 const schema = {
 	scalar: [
 		'Base64',
@@ -10,6 +16,7 @@ const schema = {
 		'Split',
 		'Sub',
 		'Ref',
+		'Condition',
 	],
 	sequence: [
 		'Cidr',
@@ -29,7 +36,7 @@ const schema = {
 
 Object.keys(schema).forEach((kind) => {
 	schema[kind].forEach((name) => {
-		const fn = name === 'Ref' ? name : `Fn::${name}`;
+		const fn = specialTypes[name] || `Fn::${name}`;
 		const type = new yaml.Type(`!${name}`, { kind, construct: (data) => ({ [fn]: data }) });
 
 		types.push(type);
