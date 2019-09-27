@@ -8,6 +8,25 @@ A small CLI tool that can help you to deal with huge CloudFormation templates by
 
 [![cfpack](https://asciinema.org/a/TXlSiEeZvDNBUl2lOahyHmith.svg)](https://asciinema.org/a/TXlSiEeZvDNBUl2lOahyHmith)
 
+## Table of Contents
+
+- [Installation](#installation)
+  - [Enable bash/zsh-completion shortcuts](#enable-bashzsh-completion-shortcuts)
+- [Getting Started](#getting-started)
+- [Build Templates](#build-templates)
+- [Commands](#commands)
+  - [Init](#init)
+  - [Build](#build)
+  - [Deploy](#deploy)
+  - [Artifacts](#artifacts)
+  - [Delete](#delete)
+- [Config file](#config-file)
+  - [Parameters](#parameters)
+  - [Artifacts](#artifacts-1)
+  - [IAM roles](#iam-roles)
+- [Contribute](#contribute)
+- [LICENSE](#license)
+
 ## Installation
 
 Install the package as global dependency to be able to use with different projects:
