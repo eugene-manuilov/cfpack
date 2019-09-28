@@ -1,6 +1,0 @@
-AWSTemplateFormatVersion: 2010-09-09
-Resources:
-  Storage:
-    Type: AWS::S3::Bucket
-    Properties: 
-      BucketName: !Sub "apsync-with-lambdas-${AWS::AccountId}"

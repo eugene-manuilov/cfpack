@@ -1,9 +1,0 @@
-{
-	"name": "appsync-with-lambdas",
-	"version": "1.0.0",
-	"scripts": {
-		"stack:build": "../../bin/cfpack.js build",
-		"stack:deploy": "../../bin/cfpack.js deploy",
-		"stack:delete": "../../bin/cfpack.js delete"
-	}
-}
