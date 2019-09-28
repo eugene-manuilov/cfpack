@@ -10,6 +10,13 @@ function dispatch(args) {
 	command(args);
 }
 
+yargs.completion('completion', (current, argv) => {
+	const commands = ['init', 'build', 'deploy', 'artifacts', 'delete', 'completion'];
+	const filter = (command) => command.substring(0, current.length) === current;
+
+	return argv._.length <= 2 ? commands.filter(filter) : [];
+});
+
 yargs.options({
 	config: {
 		type: 'string',

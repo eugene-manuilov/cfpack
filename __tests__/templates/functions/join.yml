@@ -1,0 +1,8 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-join.html#intrinsic-function-reference-join-example2
+
+JoinWithParams: !Join
+  - ''
+  - - 'arn:'
+    - !Ref Partition
+    - ':s3:::elasticbeanstalk-*-'
+    - !Ref 'AWS::AccountId'

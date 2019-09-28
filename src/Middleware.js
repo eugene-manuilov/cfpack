@@ -2,7 +2,7 @@ class Middleware {
 
 	use(fn) {
 		const self = this;
-		self.go = (stack => (input, next) => {
+		self.go = ((stack) => (input, next) => {
 			stack.call(self, input, (output) => {
 				fn.call(self, output, next.bind(self));
 			});

@@ -19,7 +19,7 @@ class Runner {
 
 		try {
 			const config = require(configPath);
-			this.args = Object.assign({}, config, args);
+			this.args = { ...config, ...args };
 		} catch (e) {
 			process.stderr.write(chalk.red('Config file hasn\'t been found.\n'));
 			process.exit(1);

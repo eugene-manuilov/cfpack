@@ -1,5 +1,14 @@
 # Change Log
 
+## v1.3.0 (2019-07-19)
+
+- Updated dependencies to fix vulnerability issues found in dependant packages.
+- Updated build command to validate the final template.
+- Added condition functions to the yaml parser schema.
+- Added bash/zsh-completion shortcuts for commands.
+- Added unit tests to check that build task properly parses yml files.
+- Fixed bug that didn't allow to keep templates in multiple folders.
+
 ## v1.2.1 (2019-06-14)
 
 - Updated dependencies to fix vulnerability issues found in dependant packages.

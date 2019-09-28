@@ -1,10 +1,31 @@
 # cfpack
 
+[![npm version](https://badge.fury.io/js/cfpack.js.svg)](https://badge.fury.io/js/cfpack.js) 
+
 A small CLI tool that can help you to deal with huge CloudFormation templates by splitting it into multiple smaller templates. Using this tool you can also build sharable drop-in templates that you can share across your projects.
 
 > Note: this project is in its early stages and may lack some functionality or may have some bugs. Please, create a new issue if you find something. It will help to make this tool better.
 
 [![cfpack](https://asciinema.org/a/TXlSiEeZvDNBUl2lOahyHmith.svg)](https://asciinema.org/a/TXlSiEeZvDNBUl2lOahyHmith)
+
+## Table of Contents
+
+- [Installation](#installation)
+  - [Enable bash/zsh-completion shortcuts](#enable-bashzsh-completion-shortcuts)
+- [Getting Started](#getting-started)
+- [Build Templates](#build-templates)
+- [Commands](#commands)
+  - [Init](#init)
+  - [Build](#build)
+  - [Deploy](#deploy)
+  - [Artifacts](#artifacts)
+  - [Delete](#delete)
+- [Config file](#config-file)
+  - [Parameters](#parameters)
+  - [Artifacts](#artifacts-1)
+  - [IAM roles](#iam-roles)
+- [Contribute](#contribute)
+- [LICENSE](#license)
 
 ## Installation
 
@@ -28,12 +49,22 @@ Then you can create shortcuts in your `package.json` file:
 	...
 	"scripts": {
 		"stack:build": "cfpack build",
-		"stack:deploy: "cfpack deploy",
+		"stack:deploy": "cfpack deploy",
 		"stack:delete": "cfpack delete"
 	},
 	...
 }
 ```
+
+### Enable bash/zsh-completion shortcuts
+
+If you want to enable bash/zsh-completion shortcuts in your terminal, then you need to run `cfpack completion` command and add generated script to your `.bashrc` or `.bash_profile` (or `.zshrc` for zsh). You can do it by running the following command:
+
+```
+cfpack completion >> ~/.bashrc
+```
+
+Once completion script is added, you need to logout and then login back to make sure that terminal reads the script and start using completion for cfpack commands.
 
 ## Getting Started
 
@@ -69,7 +100,7 @@ The `build` command will loop through the entry folder, find all files in it, re
 
 #### Deploy
 
-The `deploy` command executes build task first to create resulting template and then use it to create or update CloudFormation stack using AWS Node.js SDK. The command checks whether or not a stack exists to determine what action is required to create or to update the stack. This command will also upload artifacts if you define it in the `cfpack.config.js` file to make sure that CloudFormation stack can properly provision resoureces like lambda functions or appsync graphql API or resolvers.
+The `deploy` command executes build task first to create resulting template and then use it to create or update CloudFormation stack using AWS Node.js SDK. The command checks whether or not a stack exists to determine which action is required to create or update the stack. This command will also upload artifacts if you define it in the `cfpack.config.js` file to make sure that CloudFormation stack can properly provision resoureces like lambda functions or appsync graphql API or resolvers.
 
 #### Artifacts
 
@@ -145,7 +176,9 @@ module.exports = {
 
 ### Artifacts
 
-If your templates have resources (like lambda functions, appsync graphql schema or resolvers, etc) that rely on artifacts located in a s3 bucket, then you can define what files need to be uploaded during deployment process. Let's consider that you have a template like this:
+If your templates have resources (like lambda functions, appsync graphql schema or resolvers, etc) that rely on artifacts located in a s3 bucket, then you can define which files need to be uploaded during deployment process.
+
+Let's consider that you have a template like this:
 
 ```
 Resources:
@@ -229,7 +262,7 @@ And the structure of your project looks like this:
   └─ ...
 ```
 
-Then you can update the config file to upoad all artifacts like this:
+Then you can update the configuration file to upoad all artifacts like this:
 
 ```
 module.exports = {
@@ -265,6 +298,8 @@ module.exports = {
 };
 ```
 
+Please, pay attention that the bucket must already exist to successfully upload artifacts. It means that you can't define a bucket that you are going to use to store artifacts in your CloudFormation template because artifacts need to be uploaded before your stack is created.
+
 ### IAM roles
 
 Please, pay attention that if your CloudFormation template contains IAM roles or policies you must explicity acknowledge that it contains certain capabilities in order for AWS CloudFormation to create or update the stack. To do it, just add `Capabilities` to your config file as shown below:
@@ -286,7 +321,7 @@ module.exports = {
 
 ## Contribute
 
-Want to help or have a suggestion? Open a [new ticket](https://github.com/eugene-manuilov/cfpack/issues/new) and we can discuss it or submit pull request.
+Want to help or have a suggestion? Open a [new ticket](https://github.com/eugene-manuilov/cfpack/issues/new) and we can discuss it or submit a pull request.
 
 ## LICENSE
 

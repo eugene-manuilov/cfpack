@@ -1,0 +1,488 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BuildTask ::processTemplate --> {and.yml} 1`] = `
+"{
+  \\"MyAndCondition\\": {
+    \\"Fn::And\\": [
+      {
+        \\"Fn::Equals\\": [
+          \\"sg-mysggroup\\",
+          {
+            \\"Ref\\": \\"ASecurityGroup\\"
+          }
+        ]
+      },
+      {
+        \\"Condition\\": \\"SomeOtherCondition\\"
+      }
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {base64.yml} 1`] = `
+"{
+  \\"Fn::Base64\\": \\"AWS CloudFormation\\"
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {cidr.yml} 1`] = `
+"{
+  \\"Resources\\": {
+    \\"ExampleVpc\\": {
+      \\"Type\\": \\"AWS::EC2::VPC\\",
+      \\"Properties\\": {
+        \\"CidrBlock\\": \\"10.0.0.0/16\\"
+      }
+    },
+    \\"IPv6CidrBlock\\": {
+      \\"Type\\": \\"AWS::EC2::VPCCidrBlock\\",
+      \\"Properties\\": {
+        \\"AmazonProvidedIpv6CidrBlock\\": true,
+        \\"VpcId\\": {
+          \\"Ref\\": \\"ExampleVpc\\"
+        }
+      }
+    },
+    \\"ExampleSubnet\\": {
+      \\"Type\\": \\"AWS::EC2::Subnet\\",
+      \\"DependsOn\\": \\"IPv6CidrBlock\\",
+      \\"Properties\\": {
+        \\"AssignIpv6AddressOnCreation\\": true,
+        \\"CidrBlock\\": {
+          \\"Fn::Select\\": [
+            0,
+            {
+              \\"Fn::Cidr\\": [
+                {
+                  \\"Fn::GetAtt\\": [
+                    \\"ExampleVpc\\",
+                    \\"CidrBlock\\"
+                  ]
+                },
+                1,
+                8
+              ]
+            }
+          ]
+        },
+        \\"Ipv6CidrBlock\\": {
+          \\"Fn::Select\\": [
+            0,
+            {
+              \\"Fn::Cidr\\": [
+                {
+                  \\"Fn::Select\\": [
+                    0,
+                    {
+                      \\"Fn::GetAtt\\": [
+                        \\"ExampleVpc\\",
+                        \\"Ipv6CidrBlocks\\"
+                      ]
+                    }
+                  ]
+                },
+                1,
+                64
+              ]
+            }
+          ]
+        },
+        \\"VpcId\\": {
+          \\"Ref\\": \\"ExampleVpc\\"
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {equals.yml} 1`] = `
+"{
+  \\"UseProdCondition\\": {
+    \\"Fn::Equals\\": [
+      {
+        \\"Ref\\": \\"EnvironmentType\\"
+      },
+      \\"prod\\"
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {find-in-map.yml} 1`] = `
+"{
+  \\"Mappings\\": {
+    \\"RegionMap\\": {
+      \\"us-east-1\\": {
+        \\"HVM64\\": \\"ami-0ff8a91507f77f867\\",
+        \\"HVMG2\\": \\"ami-0a584ac55a7631c0c\\"
+      },
+      \\"us-west-1\\": {
+        \\"HVM64\\": \\"ami-0bdb828fd58c52235\\",
+        \\"HVMG2\\": \\"ami-066ee5fd4a9ef77f1\\"
+      },
+      \\"eu-west-1\\": {
+        \\"HVM64\\": \\"ami-047bb4163c506cd98\\",
+        \\"HVMG2\\": \\"ami-31c2f645\\"
+      },
+      \\"ap-southeast-1\\": {
+        \\"HVM64\\": \\"ami-08569b978cc4dfa10\\",
+        \\"HVMG2\\": \\"ami-0be9df32ae9f92309\\"
+      },
+      \\"ap-northeast-1\\": {
+        \\"HVM64\\": \\"ami-06cd52961ce9f0d85\\",
+        \\"HVMG2\\": \\"ami-053cdd503598e4a9d\\"
+      }
+    }
+  },
+  \\"Resources\\": {
+    \\"myEC2Instance\\": {
+      \\"Type\\": \\"AWS::EC2::Instance\\",
+      \\"Properties\\": {
+        \\"ImageId\\": {
+          \\"Fn::FindInMap\\": [
+            \\"RegionMap\\",
+            {
+              \\"Ref\\": \\"AWS::Region\\"
+            },
+            \\"HVM64\\"
+          ]
+        },
+        \\"InstanceType\\": \\"m1.small\\"
+      }
+    }
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {get-att.yml} 1`] = `
+"{
+  \\"AWSTemplateFormatVersion\\": \\"2010-09-09T00:00:00.000Z\\",
+  \\"Resources\\": {
+    \\"myELB\\": {
+      \\"Type\\": \\"AWS::ElasticLoadBalancing::LoadBalancer\\",
+      \\"Properties\\": {
+        \\"AvailabilityZones\\": [
+          \\"eu-west-1a\\"
+        ],
+        \\"Listeners\\": [
+          {
+            \\"LoadBalancerPort\\": \\"80\\",
+            \\"InstancePort\\": \\"80\\",
+            \\"Protocol\\": \\"HTTP\\"
+          }
+        ]
+      }
+    },
+    \\"myELBIngressGroup\\": {
+      \\"Type\\": \\"AWS::EC2::SecurityGroup\\",
+      \\"Properties\\": {
+        \\"GroupDescription\\": \\"ELB ingress group\\",
+        \\"SecurityGroupIngress\\": [
+          {
+            \\"IpProtocol\\": \\"tcp\\",
+            \\"FromPort\\": \\"80\\",
+            \\"ToPort\\": \\"80\\",
+            \\"SourceSecurityGroupOwnerId\\": {
+              \\"Fn::GetAtt\\": [
+                \\"myELB\\",
+                \\"SourceSecurityGroup.OwnerAlias\\"
+              ]
+            },
+            \\"SourceSecurityGroupName\\": {
+              \\"Fn::GetAtt\\": [
+                \\"myELB\\",
+                \\"SourceSecurityGroup.GroupName\\"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {get-azs.yml} 1`] = `
+"{
+  \\"evaluateRegions\\": [
+    {
+      \\"Fn::GetAZs\\": \\"\\"
+    },
+    {
+      \\"Fn::GetAZs\\": {
+        \\"Ref\\": \\"AWS::Region\\"
+      }
+    },
+    {
+      \\"Fn::GetAZs\\": \\"us-east-1\\"
+    }
+  ],
+  \\"mySubnet\\": {
+    \\"Type\\": \\"AWS::EC2::Subnet\\",
+    \\"Properties\\": {
+      \\"VpcId\\": {
+        \\"Ref\\": \\"VPC\\"
+      },
+      \\"CidrBlock\\": \\"10.0.0.0/24\\",
+      \\"AvailabilityZone\\": {
+        \\"Fn::Select\\": [
+          0,
+          {
+            \\"Fn::GetAZs\\": \\"\\"
+          }
+        ]
+      }
+    }
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {if.yml} 1`] = `
+"{
+  \\"SecurityGroups\\": [
+    {
+      \\"Fn::If\\": [
+        \\"CreateNewSecurityGroup\\",
+        {
+          \\"Ref\\": \\"NewSecurityGroup\\"
+        },
+        {
+          \\"Ref\\": \\"ExistingSecurityGroup\\"
+        }
+      ]
+    }
+  ],
+  \\"Outputs\\": {
+    \\"SecurityGroupId\\": {
+      \\"Description\\": \\"Group ID of the security group used.\\",
+      \\"Value\\": {
+        \\"Fn::If\\": [
+          \\"CreateNewSecurityGroup\\",
+          {
+            \\"Ref\\": \\"NewSecurityGroup\\"
+          },
+          {
+            \\"Ref\\": \\"ExistingSecurityGroup\\"
+          }
+        ]
+      }
+    }
+  },
+  \\"MyDB\\": {
+    \\"Type\\": \\"AWS::RDS::DBInstance\\",
+    \\"Properties\\": {
+      \\"AllocatedStorage\\": 5,
+      \\"DBInstanceClass\\": \\"db.m1.small\\",
+      \\"Engine\\": \\"MySQL\\",
+      \\"EngineVersion\\": 5.5,
+      \\"MasterUsername\\": {
+        \\"Ref\\": \\"DBUser\\"
+      },
+      \\"MasterUserPassword\\": {
+        \\"Ref\\": \\"DBPassword\\"
+      },
+      \\"DBParameterGroupName\\": {
+        \\"Ref\\": \\"MyRDSParamGroup\\"
+      },
+      \\"DBSnapshotIdentifier\\": {
+        \\"Fn::If\\": [
+          \\"UseDBSnapshot\\",
+          {
+            \\"Ref\\": \\"DBSnapshotName\\"
+          },
+          {
+            \\"Ref\\": \\"AWS::NoValue\\"
+          }
+        ]
+      }
+    }
+  },
+  \\"UpdatePolicy\\": {
+    \\"AutoScalingRollingUpdate\\": {
+      \\"Fn::If\\": [
+        \\"RollingUpdates\\",
+        {
+          \\"MaxBatchSize\\": 2,
+          \\"MinInstancesInService\\": 2,
+          \\"PauseTime\\": \\"PT0M30S\\"
+        },
+        {
+          \\"Ref\\": \\"AWS::NoValue\\"
+        }
+      ]
+    }
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {import-value.yml} 1`] = `
+"{
+  \\"Resources\\": {
+    \\"Service\\": {
+      \\"Type\\": \\"AWS::ECS::Service\\",
+      \\"Properties\\": {
+        \\"Cluster\\": {
+          \\"Fn::ImportValue\\": \\"ClusterName\\"
+        }
+      }
+    }
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {join.yml} 1`] = `
+"{
+  \\"JoinWithParams\\": {
+    \\"Fn::Join\\": [
+      \\"\\",
+      [
+        \\"arn:\\",
+        {
+          \\"Ref\\": \\"Partition\\"
+        },
+        \\":s3:::elasticbeanstalk-*-\\",
+        {
+          \\"Ref\\": \\"AWS::AccountId\\"
+        }
+      ]
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {not.yml} 1`] = `
+"{
+  \\"MyNotCondition\\": {
+    \\"Fn::Not\\": [
+      {
+        \\"Fn::Equals\\": [
+          {
+            \\"Ref\\": \\"EnvironmentType\\"
+          },
+          \\"prod\\"
+        ]
+      }
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {or.yml} 1`] = `
+"{
+  \\"MyOrCondition\\": {
+    \\"Fn::Or\\": [
+      {
+        \\"Fn::Equals\\": [
+          \\"sg-mysggroup\\",
+          {
+            \\"Ref\\": \\"ASecurityGroup\\"
+          }
+        ]
+      },
+      {
+        \\"Condition\\": \\"SomeOtherCondition\\"
+      }
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {ref.yml} 1`] = `
+"{
+  \\"MyEIP\\": {
+    \\"Type\\": \\"AWS::EC2::EIP\\",
+    \\"Properties\\": {
+      \\"InstanceId\\": {
+        \\"Ref\\": \\"MyEC2Instance\\"
+      }
+    }
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {select.yml} 1`] = `
+"{
+  \\"Basic\\": {
+    \\"Fn::Select\\": [
+      \\"1\\",
+      [
+        \\"apples\\",
+        \\"grapes\\",
+        \\"oranges\\",
+        \\"mangoes\\"
+      ]
+    ]
+  },
+  \\"Subnet0\\": {
+    \\"Type\\": \\"AWS::EC2::Subnet\\",
+    \\"Properties\\": {
+      \\"VpcId\\": {
+        \\"Ref\\": \\"VPC\\"
+      },
+      \\"CidrBlock\\": {
+        \\"Fn::Select\\": [
+          0,
+          {
+            \\"Ref\\": \\"DbSubnetIpBlocks\\"
+          }
+        ]
+      }
+    }
+  },
+  \\"AvailabilityZone\\": {
+    \\"Fn::Select\\": [
+      0,
+      {
+        \\"Fn::GetAZs\\": {
+          \\"Ref\\": \\"AWS::Region\\"
+        }
+      }
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {split.yml} 1`] = `
+"{
+  \\"SimpleList\\": {
+    \\"Fn::Split\\": [
+      \\"|\\",
+      \\"a|b|c\\"
+    ]
+  },
+  \\"WithEmptyValues\\": {
+    \\"Fn::Split\\": [
+      \\"|\\",
+      \\"a||c|\\"
+    ]
+  },
+  \\"ImportedOutputValue\\": {
+    \\"Fn::Select\\": [
+      2,
+      {
+        \\"Fn::Split\\": [
+          \\",\\",
+          {
+            \\"Fn::ImportValue\\": \\"AccountSubnetIDs\\"
+          }
+        ]
+      }
+    ]
+  }
+}"
+`;
+
+exports[`BuildTask ::processTemplate --> {transform.yml} 1`] = `
+"{
+  \\"TransformTest\\": {
+    \\"Fn::Transform\\": {
+      \\"Name\\": \\"AWS::Include\\",
+      \\"Parameters\\": {
+        \\"Location\\": \\"us-east-1\\"
+      }
+    }
+  }
+}"
+`;

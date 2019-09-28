@@ -1,0 +1,4 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-conditions.html#w2ab1c21c24c21c33b8
+MyAndCondition: !And
+  - !Equals ["sg-mysggroup", !Ref ASecurityGroup]
+  - !Condition SomeOtherCondition

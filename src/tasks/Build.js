@@ -2,6 +2,7 @@ const os = require('os');
 const fs = require('fs');
 const path = require('path');
 
+const AWS = require('aws-sdk');
 const yaml = require('js-yaml');
 const chalk = require('chalk');
 
@@ -9,6 +10,11 @@ const Task = require('../Task');
 const intrinsicFunctions = require('../utils/intrinsic-functions-schema');
 
 class BuildTask extends Task {
+
+	constructor() {
+		super();
+		this.lastError = false;
+	}
 
 	run(next) {
 		this.log.message('Build template file...');
@@ -22,10 +28,12 @@ class BuildTask extends Task {
 		this.log.info('├─ Processing found templates...');
 		this.processTemplates();
 
-		this.saveFinalTemplate();
-		this.log.info(`└─ Final template: ${chalk.magenta(this.output.templateFile)}\n`);
-
-		next(this.output);
+		this.log.info('├─ Validating final template...');
+		this.validateFinalTemplate(() => {
+			this.saveFinalTemplate();
+			this.log.info(`└─ Final template: ${chalk.magenta(this.output.templateFile)}\n`);
+			next(this.output);
+		});
 	}
 
 	findTemplates() {
@@ -67,10 +75,16 @@ class BuildTask extends Task {
 		const template = {};
 
 		this.output.files.forEach((file) => {
+			this.lastError = false;
+
 			const doc = this.processTemplate(file);
 			if (!doc) {
+				const error = this.lastError.toString().split('\n').join('\n│  ');
+				this.log.info(`├─ Error processing ${file} template: ${error}`);
 				return;
 			}
+
+			this.log.info(`├─ Processed ${file} template...`);
 
 			Object.keys(doc).forEach((group) => {
 				if (typeof doc[group] === 'object') {
@@ -99,24 +113,33 @@ class BuildTask extends Task {
 		const content = fs.readFileSync(file, 'utf8');
 
 		try {
-			const doc = JSON.parse(content);
-			return doc;
+			return content.trim(0).charAt(0) === '{'
+				? JSON.parse(content)
+				: yaml.safeLoad(content, { schema: intrinsicFunctions });
 		} catch (e) {
-			// do nothing
-		}
-
-		try {
-			const doc = yaml.safeLoad(content, { schema: intrinsicFunctions });
-
-			this.log.info(`├─ Processed ${file} template...`);
-
-			return doc;
-		} catch (e) {
-			const error = e.toString().split('\n').join('\n│  ');
-			this.log.info(`├─ Error processing ${file} template: ${error}`);
+			this.lastError = e;
 		}
 
 		return false;
+	}
+
+	validateFinalTemplate(callback) {
+		const { stack } = this.options;
+		const cloudformation = new AWS.CloudFormation({
+			apiVersion: '2010-05-15',
+			region: stack.region,
+		});
+
+		cloudformation.validateTemplate({ TemplateBody: JSON.stringify(this.output.template, '', 4) }, (err) => {
+			if (err) {
+				this.log.error(`├─ ${err.message}`, false);
+				this.log.error(`└─ RequestId: ${chalk.magenta(err.requestId)}`, false);
+				this.log.stop();
+				process.exit(1);
+			} else {
+				callback();
+			}
+		});
 	}
 
 	saveFinalTemplate() {

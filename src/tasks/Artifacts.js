@@ -85,7 +85,7 @@ class Artifacts extends Task {
 	processArtifact(bucket, location, options) {
 		const args = typeof options === 'string'
 			? { path: options }
-			: Object.assign({}, options);
+			: { ...options };
 
 		let baseDir = args.baseDir || '.';
 		if (!path.isAbsolute(baseDir)) {
