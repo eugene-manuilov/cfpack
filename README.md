@@ -100,7 +100,7 @@ The `build` command will loop through the entry folder, find all files in it, re
 
 #### Deploy
 
-The `deploy` command executes build task first to create resulting template and then use it to create or update CloudFormation stack using AWS Node.js SDK. The command checks whether or not a stack exists to determine what action is required to create or to update the stack. This command will also upload artifacts if you define it in the `cfpack.config.js` file to make sure that CloudFormation stack can properly provision resoureces like lambda functions or appsync graphql API or resolvers.
+The `deploy` command executes build task first to create resulting template and then use it to create or update CloudFormation stack using AWS Node.js SDK. The command checks whether or not a stack exists to determine which action is required to create or update the stack. This command will also upload artifacts if you define it in the `cfpack.config.js` file to make sure that CloudFormation stack can properly provision resoureces like lambda functions or appsync graphql API or resolvers.
 
 #### Artifacts
 
@@ -176,7 +176,9 @@ module.exports = {
 
 ### Artifacts
 
-If your templates have resources (like lambda functions, appsync graphql schema or resolvers, etc) that rely on artifacts located in a s3 bucket, then you can define what files need to be uploaded during deployment process. Let's consider that you have a template like this:
+If your templates have resources (like lambda functions, appsync graphql schema or resolvers, etc) that rely on artifacts located in a s3 bucket, then you can define which files need to be uploaded during deployment process.
+
+Let's consider that you have a template like this:
 
 ```
 Resources:
@@ -260,7 +262,7 @@ And the structure of your project looks like this:
   └─ ...
 ```
 
-Then you can update the config file to upoad all artifacts like this:
+Then you can update the configuration file to upoad all artifacts like this:
 
 ```
 module.exports = {
@@ -295,6 +297,8 @@ module.exports = {
     }
 };
 ```
+
+Please, pay attention that the bucket must already exist to successfully upload artifacts. It means that you can't define a bucket that you are going to use to store artifacts in your CloudFormation template because artifacts need to be uploaded before your stack is created.
 
 ### IAM roles
 
