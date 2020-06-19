@@ -2,7 +2,7 @@
 
 ## v1.4.0 (2020-06-19)
 
-- 
+- Updated dependencies to the latest versions.
 
 ## v1.3.0 (2019-07-19)
 
