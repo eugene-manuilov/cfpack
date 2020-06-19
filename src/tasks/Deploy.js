@@ -70,7 +70,7 @@ class DeployTask extends ApiTask {
 				this.log.error(`${err.code}: ${err.message}`, false);
 				this.log.info(`└─ RequestId: ${chalk.magenta(err.requestId)}`);
 				this.log.stop();
-				process.exit(1);
+				process.exit(err.code === 'ValidationError' ? 0 : 1);
 			} else {
 				this.log.message(message);
 				this.log.info(`├─ RequestId: ${chalk.magenta(data.ResponseMetadata.RequestId)}`);
