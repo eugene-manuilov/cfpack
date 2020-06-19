@@ -34,7 +34,8 @@
 	"scripts": {
 		"test": "jest",
 		"lint": "eslint src commands bin",
-		"prepublish": "npm run lint"
+		"lint:fix": "npm run lint --silent -- --fix",
+		"prepublish": "npm run lint --silent"
 	},
 	"dependencies": {
 		"aws-sdk": "^2.700.0",

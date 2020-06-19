@@ -33,8 +33,8 @@ yargs.options({
 	},
 });
 
-yargs.scriptName( 'cfpack' );
-yargs.usage( 'Usage: cfpack <command>' );
+yargs.scriptName('cfpack');
+yargs.usage('Usage: cfpack <command>');
 
 yargs.command('init', 'Initializes cfpack config in the current directory.', {}, dispatch);
 yargs.command('build', 'Assembles templates into one CloudFormation template.', {}, dispatch);
