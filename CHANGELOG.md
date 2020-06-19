@@ -1,5 +1,10 @@
 # Change Log
 
+## v1.4.0 (2020-06-19)
+
+- Updated dependencies to the latest versions.
+- Updated deploy task to exit with 0 code if there are no updates to perform.
+
 ## v1.3.0 (2019-07-19)
 
 - Updated dependencies to fix vulnerability issues found in dependant packages.
