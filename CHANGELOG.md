@@ -2,6 +2,8 @@
 
 ## v2.0.0 (TBD)
 
+- Breaking: Updated supported version of Node to be 12+.
+
 ## v1.4.0 (2020-06-19)
 
 - Updated dependencies to the latest versions.
