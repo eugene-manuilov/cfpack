@@ -1,5 +1,7 @@
 # Change Log
 
+## v2.0.0 (TBD)
+
 ## v1.4.0 (2020-06-19)
 
 - Updated dependencies to the latest versions.
