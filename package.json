@@ -48,6 +48,16 @@
 		"eslint": "^7.7.0",
 		"eslint-config-airbnb-base": "^14.2.0",
 		"eslint-plugin-import": "^2.22.0",
-		"jest": "^26.4.2"
+		"husky": "^4.2.5",
+		"jest": "^26.4.2",
+		"lint-staged": "^10.2.11"
+	},
+	"lint-staged": {
+		"*.ts": "eslint"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
 	}
 }
