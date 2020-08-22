@@ -6,7 +6,7 @@
 	"license": "MIT",
 	"main": "index.js",
 	"bin": {
-		"cfpack": "./bin/cfpack.js"
+		"cfpack": "./bin/run"
 	},
 	"homepage": "https://github.com/eugene-manuilov/cfpack#readme",
 	"bugs": {
@@ -25,35 +25,57 @@
 		"cf"
 	],
 	"files": [
-		"bin/",
-		"commands/",
-		"src/"
+		"/bin",
+		"/lib",
+		"/npm-shrinkwrap.json",
+		"/oclif.manifest.json"
 	],
 	"scripts": {
+		"cfpack": "./bin/run",
+		"prebuild": "rimraf lib",
+		"build": "tsc -b",
+		"postbuild": "oclif-dev manifest",
 		"test": "jest",
 		"lint": "eslint . --ext .js --ignore-pattern node_modules",
 		"format": "npm run lint --silent -- --fix"
 	},
 	"dependencies": {
+		"@oclif/command": "^1.8.0",
+		"@oclif/config": "^1.17.0",
+		"@oclif/plugin-help": "^3.2.0",
 		"aws-sdk": "^2.738.0",
 		"chalk": "^4.1.0",
 		"glob": "^7.1.6",
 		"js-yaml": "^3.14.0",
 		"node-native-zip": "^1.1.0",
 		"ora": "^5.0.0",
+		"tslib": "^2.0.1",
 		"yargs": "^15.3.1",
 		"yargs-interactive": "^3.0.0"
 	},
 	"devDependencies": {
+		"@oclif/dev-cli": "^1.22.2",
+		"@types/node": "^12.12.54",
 		"eslint": "^7.7.0",
 		"eslint-config-airbnb-base": "^14.2.0",
 		"eslint-plugin-import": "^2.22.0",
 		"husky": "^4.2.5",
 		"jest": "^26.4.2",
-		"lint-staged": "^10.2.11"
+		"lint-staged": "^10.2.11",
+		"rimraf": "^3.0.2",
+		"ts-node": "^9.0.0",
+		"typescript": "^3.9.7"
+	},
+	"types": "lib/index.d.ts",
+	"oclif": {
+		"commands": "./lib/commands",
+		"bin": "cfpack",
+		"plugins": [
+			"@oclif/plugin-help"
+		]
 	},
 	"lint-staged": {
-		"*.(t|j)s": "eslint"
+		"*.ts": "eslint"
 	},
 	"husky": {
 		"hooks": {
