@@ -1,5 +1,8 @@
 import { Command, flags } from '@oclif/command';
 
+import { Runner } from '../runner';
+import { ArtifactsTask } from '../tasks/artifacts';
+
 class ArtifactsCommand extends Command {
 
 	public static description = 'Uploads artifacts to s3 buckets.';
@@ -20,20 +23,17 @@ class ArtifactsCommand extends Command {
 		} ),
 	};
 
-	public async run(): Promise<void> {
-		// const { args, flags } = this.parse( ArtifactsCommand );
+	public run(): Promise<void> {
+		return new Promise( ( resolve ) => {
+			const { flags } = this.parse( ArtifactsCommand );
+			const runner = new Runner( flags );
 
-		// const Runner = require('../src/Runner');
-		// const ArtifactsTask = require('../src/tasks/Artifacts');
+			runner.loadConfig();
+			runner.setupLogs();
+			runner.use( new ArtifactsTask() );
 
-		// module.exports = (args) => {
-		// 	const runner = new Runner(args);
-
-		// 	runner.loadConfig();
-		// 	runner.setupLogs();
-		// 	runner.use(new ArtifactsTask());
-		// 	runner.execute();
-		// };
+			runner.execute( resolve );
+		} );
 	}
 
 }

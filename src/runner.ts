@@ -5,8 +5,7 @@ import { red } from 'chalk';
 import { Middleware } from './middleware';
 import { Logger } from './logger';
 import { Task } from './task';
-import { RunnerContext } from './runner-context.type';
-import { RunnerData } from './runner-data.type';
+import { RunnerContext, RunnerData } from './types';
 
 export class Runner {
 

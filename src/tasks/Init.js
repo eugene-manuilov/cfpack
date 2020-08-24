@@ -4,7 +4,7 @@ const yargsInteractive = require('yargs-interactive');
 
 const Task = require('../Task');
 
-class Init extends Task {
+class InitTask extends Task {
 
 	/* eslint-disable class-methods-use-this */
 	run(next) {
@@ -113,4 +113,4 @@ class Init extends Task {
 
 }
 
-module.exports = Init;
+module.exports = InitTask;
