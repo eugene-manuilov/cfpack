@@ -1,5 +1,8 @@
 import { Command, flags } from '@oclif/command';
 
+import { Runner } from '../runner';
+import { DeleteTask } from '../tasks/delete';
+
 class DeleteCommand extends Command {
 
 	public static description = 'Deletes a CloudFormation stack.';
@@ -22,20 +25,17 @@ class DeleteCommand extends Command {
 		} ),
 	};
 
-	public async run(): Promise<void> {
-		// const { args, flags } = this.parse( DeleteCommand );
+	public run(): Promise<void> {
+		return new Promise( ( resolve ) => {
+			const { flags } = this.parse( DeleteCommand );
+			const runner = new Runner( flags );
 
-		// const Runner = require('../src/Runner');
-		// const DeleteTask = require('../src/tasks/Delete');
+			runner.loadConfig();
+			runner.setupLogs();
+			runner.use( new DeleteTask() );
 
-		// module.exports = (args) => {
-		// 	const runner = new Runner(args);
-
-		// 	runner.loadConfig();
-		// 	runner.setupLogs();
-		// 	runner.use(new DeleteTask());
-		// 	runner.execute();
-		// };
+			runner.execute( resolve );
+		} );
 	}
 
 }
