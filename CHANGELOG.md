@@ -2,6 +2,10 @@
 
 ## v2.0.0 (TBD)
 
+- Reworked core to use oclif framework.
+- Reworked core to use Typescript.
+- Added jest tests to test different pieces of the tool.
+- Fixed incorrect behavior when commands had been executed outside of the directory with config file.
 - Breaking: Updated supported version of Node to be 12+.
 
 ## v1.4.0 (2020-06-19)
