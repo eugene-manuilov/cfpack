@@ -9,7 +9,7 @@ export abstract class Task {
 	protected input?: RunnerData;
 	protected log?: Logger;
 	protected options?: RunnerContext;
-	protected output?: RunnerData;
+	protected readonly output: RunnerData = {};
 
 	public setOptions( options: RunnerContext ): void {
 		this.options = options;
