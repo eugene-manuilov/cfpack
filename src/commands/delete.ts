@@ -15,12 +15,10 @@ class DeleteCommand extends Command {
 		} ),
 		verbose: flags.boolean( {
 			description: 'Display extended details.',
-			default: false,
 			required: false,
 		} ),
 		silent: flags.boolean( {
 			description: 'Prevent output from being displayed in stdout.',
-			default: false,
 			required: false,
 		} ),
 	};

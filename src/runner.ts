@@ -54,7 +54,6 @@ export class Runner {
 			}
 
 			task.setData( data );
-
 			task.run( next );
 		} );
 	}

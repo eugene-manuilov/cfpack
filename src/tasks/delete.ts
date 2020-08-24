@@ -1,5 +1,5 @@
 import { magenta } from 'chalk';
-import { AWSError } from 'aws-sdk';
+import { AWSError, CloudFormation } from 'aws-sdk';
 import {
 	DescribeStacksInput,
 	DescribeStacksOutput,
@@ -20,7 +20,10 @@ export class DeleteTask extends ApiTask {
 
 		const { stack } = this.options || {};
 		const { name: stackName, region } = stack || {};
-		this.cloudformation.config.region = region || 'us-east-1';
+		this.cloudformation = new CloudFormation( {
+			apiVersion: '2010-05-15',
+			region: region || 'us-east-1',
+		} );
 
 		if ( this.log ) {
 			this.log.info( `├─ Checking whether ${ stackName } stack exists...` );
