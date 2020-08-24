@@ -4,7 +4,7 @@
 	"description": "A CLI tool that helps to work with big CloudFormation templates by splitting it into multiple smaller templates.",
 	"author": "Eugene Manuilov <eugene.manuilov@gmail.com>",
 	"license": "MIT",
-	"main": "index.js",
+	"main": "lib/index.js",
 	"bin": {
 		"cfpack": "./bin/run"
 	},
