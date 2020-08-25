@@ -2,9 +2,10 @@
 
 ## v2.0.0 (TBD)
 
-- Reworked core to use oclif framework.
-- Reworked core to use Typescript.
-- Added jest tests to test different pieces of the tool.
+- Replaced yargs with oclif framework.
+- Reworked everything to use Typescript.
+- Added jest tests to test different pieces of the core.
+- Enhanced `init` command to ask more questions and to create a better config file.
 - Fixed incorrect behavior when commands had been executed outside of the directory with config file.
 - Breaking: Updated supported version of Node to be 12+.
 
