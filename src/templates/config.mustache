@@ -1,0 +1,94 @@
+/**
+ * The folder name where all CloudFormation templates are stored.
+ *
+ * @type {string}
+ */
+exports.entry = {{ entryFolder }};
+
+/**
+ * The filename for generated CloudFormation template.
+ *
+ * @type {string}
+ */
+exports.output = {{ outputFile }};
+
+/**
+ * Whether to display extended output information during commands run.
+ *
+ * @type {boolean}
+ */
+exports.verbose = true;
+
+/**
+ * Whether to suppress all output.
+ *
+ * @type {boolean}
+ */
+exports.silent = false;
+
+/**
+ * Stack declaration object.
+ *
+ * @type {object}
+ */
+exports.stack = {};
+
+/**
+ * The stack name.
+ *
+ * @type {string}
+ */
+exports.stack.name = {{ stackName }};
+
+/**
+ * The stack region name. It should be a valid region ID supported by AWS.
+ *
+ * @see https://aws.amazon.com/about-aws/global-infrastructure/#AWS_Global_Infrastructure_Map
+ * @type {string}
+ */
+exports.stack.region = {{ stackRegion }};
+
+/**
+ * Additional parameters for the stack creation request.
+ *
+ * @see: https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudFormation.html#createStack-property
+ * @type {object}
+ */
+exports.stack.params = {
+	{{ #capabilityIAM }}
+	Capabilities: ['CAPABILITY_IAM'],
+	{{ /capabilityIAM }}
+	{{ ^capabilityIAM }}
+	/* uncomment if your CloudFormation template manages IAM resources */
+	// Capabilities: ['CAPABILITY_IAM'],
+	{{ /capabilityIAM }}
+	/* uncomment if your CloudFormation require parameters */
+	// Parameters: [
+	// 	{
+	// 		ParameterKey: 'my-parameter',
+	// 		ParameterValue: 'my-value',
+	// 	},
+	// ],
+};
+
+/**
+ * Artifacts list to use for the stack. Artifacts are uploaded to a S3 bucket before stack is created or updated.
+ *
+ * @example
+ * exports.stack.artifacts = [
+ *   {
+ *     bucket: 'my-s3-bucket',
+ *     files: {
+ *       'assets/images/': 'local/images/*.png'
+ *       'assets/bundle.zip': {
+ *         baseDir: 'local/files/',
+ *         path: '*.js',
+ *         compression: 'zip', // zip | none
+ *       },
+ *     },
+ *   },
+ * ];
+ *
+ * @type {Array}
+ */
+exports.stack.artifacts = [];
