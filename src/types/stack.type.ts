@@ -4,4 +4,5 @@ export type Stack = {
 	name: string,
 	region?: string,
 	artifacts?: Artifacts,
+	params?: { [x: string]: string },
 };

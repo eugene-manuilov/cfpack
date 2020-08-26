@@ -1,5 +1,8 @@
 import { Command, flags } from '@oclif/command';
 
+import { Runner } from '../runner';
+import { BuildTask, ArtifactsTask, DeployTask } from '../tasks';
+
 class DeployCommand extends Command {
 
 	public static description = 'Assembles and deploys CloudFormation template.';
@@ -20,26 +23,20 @@ class DeployCommand extends Command {
 		} ),
 	};
 
-	public async run(): Promise<void> {
-		// const { args, flags } = this.parse( DeployCommand );
+	public run(): Promise<void> {
+		return new Promise( ( resolve ) => {
+			const { flags } = this.parse( DeployCommand );
+			const runner = new Runner( flags );
 
-		// const Runner = require('../src/Runner');
-		// const BuildTask = require('../src/tasks/Build');
-		// const ArtifactsTask = require('../src/tasks/Artifacts');
-		// const DeployTask = require('../src/tasks/Deploy');
+			runner.loadConfig();
+			runner.setupLogs();
 
-		// module.exports = (args) => {
-		// 	const runner = new Runner(args);
+			runner.use( new BuildTask() );
+			runner.use( new ArtifactsTask() );
+			runner.use( new DeployTask() );
 
-		// 	runner.loadConfig();
-		// 	runner.setupLogs();
-
-		// 	runner.use(new BuildTask());
-		// 	runner.use(new ArtifactsTask());
-		// 	runner.use(new DeployTask());
-
-		// 	runner.execute();
-		// };
+			runner.execute( resolve );
+		} );
 	}
 
 }

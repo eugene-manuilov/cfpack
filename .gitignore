@@ -2,3 +2,4 @@
 /node_modules/
 /lib/
 /oclif.manifest.json
+/examples/**/cloudformation.json
