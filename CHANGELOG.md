@@ -5,6 +5,7 @@
 - Replaced yargs with oclif framework.
 - Reworked everything to use Typescript.
 - Added jest tests to test different pieces of the core.
+- Added check for updates to inform when a new release is out.
 - Enhanced `init` command to ask more questions and to create a better config file.
 - Fixed incorrect behavior when commands had been executed outside of the directory with config file.
 - Breaking: Updated supported version of Node to be 12+.
