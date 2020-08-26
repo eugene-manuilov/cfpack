@@ -1,3 +1,5 @@
+/.vscode/
 /node_modules/
-/example/appsync-with-lambdas/node_modules/
-/example/appsync-with-lambdas/cloudformation.json
+/lib/
+/oclif.manifest.json
+/examples/**/cloudformation.json
