@@ -14,7 +14,7 @@ import { safeLoad, Schema } from 'js-yaml';
 import { magenta } from 'chalk';
 
 import { Task } from '../task';
-import { createSchema } from '../utils/intrinsic-functions-schema';
+import { createSchema } from '../utils';
 
 export class BuildTask extends Task {
 

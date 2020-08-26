@@ -5,7 +5,7 @@ import { Command } from '@oclif/command';
 import { prompt, ChoiceOptions } from 'inquirer';
 import * as Mustache from 'mustache';
 
-import { isNotEmpty } from '../utils/prompt-helpers';
+import { isNotEmpty } from '../utils';
 
 class InitCommand extends Command {
 

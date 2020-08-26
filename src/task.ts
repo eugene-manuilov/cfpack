@@ -1,6 +1,6 @@
 import { Logger } from './logger';
 import { RunnerContext, RunnerData } from './types';
-import { uuid } from './utils/uuid';
+import { uuid } from './utils';
 
 export abstract class Task {
 
