@@ -66,4 +66,8 @@ export class Config {
 		return this.data.output || '';
 	}
 
+	public get config(): string {
+		return this.data.config;
+	}
+
 }

@@ -1,38 +1,20 @@
-import { isAbsolute, resolve } from 'path';
-
-import { red } from 'chalk';
-
 import { Middleware } from './middleware';
 import { Logger } from './logger';
 import { Task } from './task';
 import { RunnerContext, RunnerData } from './types';
+import { Config } from './config';
 
 export class Runner {
 
 	private readonly middleware: Middleware = new Middleware();
 	private log?: Logger;
+	private config?: Config;
 
 	public constructor( private args: RunnerContext ) {}
 
 	public loadConfig(): void {
 		const { args } = this;
-
-		if ( !args.config ) {
-			process.stderr.write( red( 'Config file hasn\'t been found.\n' ) );
-			process.exit( 1 );
-		}
-
-		const configPath = isAbsolute( args.config )
-			? args.config
-			: resolve( process.cwd(), args.config );
-
-		try {
-			const config = require( configPath );
-			this.args = { ...config, ...args };
-		} catch ( e ) {
-			process.stderr.write( red( 'Config file hasn\'t been found.\n' ) );
-			process.exit( 1 );
-		}
+		this.config = Config.load( args );
 	}
 
 	public setupLogs( start = true ): void {
@@ -44,8 +26,8 @@ export class Runner {
 
 	public use( task: Task ): void {
 		this.middleware.use( ( data: RunnerData, next: Function ) => {
-			if ( this.args ) {
-				task.setOptions( this.args );
+			if ( this.config ) {
+				task.setOptions( this.config );
 			}
 
 			if ( this.log ) {

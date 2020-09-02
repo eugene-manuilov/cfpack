@@ -1,6 +1,7 @@
 import { Logger } from './logger';
-import { RunnerContext, RunnerData } from './types';
+import { RunnerData } from './types';
 import { uuid } from './utils';
+import { Config } from './config';
 
 export abstract class Task {
 
@@ -10,11 +11,11 @@ export abstract class Task {
 
 	protected log?: Logger;
 
-	protected options?: RunnerContext;
+	protected options?: Config;
 
 	protected readonly output: RunnerData = {};
 
-	public setOptions( options: RunnerContext ): void {
+	public setOptions( options: Config ): void {
 		this.options = options;
 	}
 
