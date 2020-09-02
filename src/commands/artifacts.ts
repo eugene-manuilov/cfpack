@@ -1,7 +1,8 @@
 import { Command, flags } from '@oclif/command';
 
-import { Runner } from '../runner';
 import { ArtifactsTask } from '../tasks/artifacts';
+import { Config } from '../config';
+import { Logger } from '../logger';
 
 class ArtifactsCommand extends Command {
 
@@ -26,13 +27,13 @@ class ArtifactsCommand extends Command {
 	public run(): Promise<void> {
 		return new Promise( ( resolve ) => {
 			const { flags } = this.parse( ArtifactsCommand );
-			const runner = new Runner( flags );
+			const config = Config.load( flags );
+			const logger = new Logger( config.silent, config.verbose );
 
-			runner.loadConfig();
-			runner.setupLogs();
-			runner.use( new ArtifactsTask() );
-
-			runner.execute( resolve );
+			const artifacts = new ArtifactsTask();
+			artifacts.setLogger( logger );
+			artifacts.setOptions( config );
+			artifacts.run( resolve );
 		} );
 	}
 

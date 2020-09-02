@@ -1,7 +1,8 @@
 import { Command, flags } from '@oclif/command';
 
-import { Runner } from '../runner';
 import { BuildTask } from '../tasks/build';
+import { Config } from '../config';
+import { Logger } from '../logger';
 
 class BuildCommand extends Command {
 
@@ -26,13 +27,13 @@ class BuildCommand extends Command {
 	public run(): Promise<void> {
 		return new Promise( ( resolve ) => {
 			const { flags } = this.parse( BuildCommand );
-			const runner = new Runner( flags );
+			const config = Config.load( flags );
+			const logger = new Logger( config.silent, config.verbose );
 
-			runner.loadConfig();
-			runner.setupLogs();
-			runner.use( new BuildTask() );
-
-			runner.execute( resolve );
+			const builder = new BuildTask();
+			builder.setLogger( logger );
+			builder.setOptions( config );
+			builder.run( resolve );
 		} );
 	}
 

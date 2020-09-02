@@ -1,22 +1,18 @@
 import { green, red, gray, white } from 'chalk';
 import { CloudFormation, AWSError } from 'aws-sdk';
 import {
-	StackEvent,
+	StackId,
+	Timestamp,
 	DescribeStackEventsInput,
 	DescribeStackEventsOutput,
-	Timestamp,
-	StackId
+	StackEvent
 } from 'aws-sdk/clients/cloudformation';
 
-import { Task } from './task';
+import { Logger } from './logger';
 
-export abstract class ApiTask extends Task {
-
-	protected cloudformation: CloudFormation = new CloudFormation( { apiVersion: '2010-05-15' } );
+export class PollStackEvents {
 
 	private events: { [x: string]: boolean } = {};
-
-	private resourceMaxLength?: number;
 
 	private pollParams?: DescribeStackEventsInput;
 
@@ -32,21 +28,22 @@ export abstract class ApiTask extends Task {
 		return `${ hour }:${ min }:${ sec }`;
 	}
 
-	public startPollingEvents( stackId?: StackId ): void {
-		const { stack } = this.options || {};
-		const { name } = stack || {};
+	public constructor(
+		private readonly uuid: string,
+		private readonly cloudformation: CloudFormation,
+		private readonly log: Logger
+	) {}
 
+	public start( stackId?: StackId ): void {
 		this.events = {};
 
-		this.pollParams = { StackName: stackId || name };
-		this.pollInterval = setInterval( this.pollStackEvents.bind( this ), 2500 );
+		this.pollParams = { StackName: stackId };
+		this.pollInterval = setInterval( this.poll.bind( this ), 2500 );
 
-		if ( this.log ) {
-			this.log.info( white.bold( 'Event Logs:' ) );
-		}
+		this.log.info( white.bold( 'Event Logs:' ) );
 	}
 
-	public stopPollingEvents(): void {
+	public stop(): void {
 		if ( this.pollInterval ) {
 			clearInterval( this.pollInterval );
 		}
@@ -56,30 +53,12 @@ export abstract class ApiTask extends Task {
 		}
 	}
 
-	public pollStackEvents(): void {
+	private poll(): void {
 		this.cloudformation.describeStackEvents( this.pollParams || {}, ( err: AWSError, data: DescribeStackEventsOutput ) => {
 			if ( !err && data.StackEvents ) {
-				data.StackEvents.reverse().forEach( this.displayEvent.bind( this ) );
+				data.StackEvents.reverse().forEach( this.displayEvent, this );
 			}
 		} );
-	}
-
-	private getResourceMaxLength(): number {
-		if ( !this.resourceMaxLength ) {
-			const { stack } = this.options || {};
-			const { name: stackName } = stack || {};
-
-			const { template } = this.input || {};
-			const { Resources } = template || {};
-
-			this.resourceMaxLength = Math.max(
-				35, // not less than 35 characters
-				stackName ? stackName.length : 0,
-				...Object.keys( Resources || [] ).map( ( item ) => item.length )
-			);
-		}
-
-		return this.resourceMaxLength;
 	}
 
 	public displayEvent( event: StackEvent ): void {
@@ -92,10 +71,10 @@ export abstract class ApiTask extends Task {
 			ResourceStatusReason,
 		} = event;
 
-		if ( ClientRequestToken === this.taskUUID && !this.events[EventId] ) {
+		if ( ClientRequestToken === this.uuid && !this.events[EventId] ) {
 			this.events[EventId] = true;
 
-			let resource = ( LogicalResourceId || '' ).padEnd( this.getResourceMaxLength(), ' ' );
+			let resource = ( LogicalResourceId || '' ).padEnd( 35, ' ' );
 			let status = ( ResourceStatus || '' ).padEnd( 45, ' ' 	);
 
 			switch ( ResourceStatus ) {
@@ -121,7 +100,7 @@ export abstract class ApiTask extends Task {
 			}
 
 			const message = [
-				`[${ ApiTask.getTime( Timestamp ) }]`,
+				`[${ PollStackEvents.getTime( Timestamp ) }]`,
 				resource,
 				status,
 				ResourceStatusReason || gray( '—' ),
