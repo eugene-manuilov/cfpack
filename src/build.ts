@@ -13,12 +13,24 @@ import { CloudFormation } from 'aws-sdk';
 import { safeLoad, Schema } from 'js-yaml';
 import { magenta } from 'chalk';
 
-import { Task } from '../task';
-import { createSchema } from '../utils';
+import { createSchema } from './utils';
+import { Logger } from './logger';
+import { Config } from './config';
 
-export class BuildTask extends Task {
+export class BuildTask {
 
 	private readonly intrinsicFunctionsSchema: Schema = createSchema();
+
+	private files: string[] = [];
+
+	private template: { [x: string]: {} } = {};
+
+	private templateFile: string = '';
+
+	public constructor(
+		private readonly options: Config,
+		private readonly log: Logger
+	) {}
 
 	public run( next: Function ): void {
 		if ( this.log ) {
@@ -29,7 +41,7 @@ export class BuildTask extends Task {
 
 		this.findTemplates();
 
-		if ( !Array.isArray( this.output.files ) || this.output.files.length === 0 ) {
+		if ( this.files.length === 0 ) {
 			return;
 		}
 
@@ -47,10 +59,13 @@ export class BuildTask extends Task {
 			this.saveFinalTemplate();
 
 			if ( this.log ) {
-				this.log.info( `└─ Final template: ${ magenta( this.output.templateFile ) }\n` );
+				this.log.info( `└─ Final template: ${ magenta( this.templateFile ) }\n` );
 			}
 
-			next( this.output );
+			next( {
+				template: this.template,
+				file: this.templateFile,
+			} );
 		} );
 	}
 
@@ -77,7 +92,7 @@ export class BuildTask extends Task {
 			}
 		}
 
-		this.output.files = files;
+		this.files = files;
 	}
 
 	public walkTemplates( dir: string, list: string[] ): string[] {
@@ -97,9 +112,8 @@ export class BuildTask extends Task {
 
 	public processTemplates(): void {
 		const template: { [x: string]: string | Date | {} } = {};
-		const { files = [] } = this.output;
 
-		files.forEach( ( file ) => {
+		this.files.forEach( ( file ) => {
 			try {
 				const doc = this.processTemplate( file );
 
@@ -126,7 +140,7 @@ export class BuildTask extends Task {
 			}
 		} );
 
-		this.output.template = template;
+		this.template = template;
 	}
 
 	public processTemplate( file: string ): { [x: string]: string | Date | {} } {
@@ -143,7 +157,7 @@ export class BuildTask extends Task {
 			region: stack ? stack.region : 'us-east-1',
 		} );
 
-		cloudformation.validateTemplate( { TemplateBody: JSON.stringify( this.output.template, undefined, 4 ) }, ( err ) => {
+		cloudformation.validateTemplate( { TemplateBody: JSON.stringify( this.template, undefined, 4 ) }, ( err ) => {
 			if ( err ) {
 				if ( this.log ) {
 					this.log.error( `├─ ${ err.message }`, false );
@@ -173,9 +187,9 @@ export class BuildTask extends Task {
 			? filename
 			: resolve( dirname( config ), filename );
 
-		const data = JSON.stringify( this.output.template, undefined, 4 );
+		const data = JSON.stringify( this.template, undefined, 4 );
 		writeFileSync( filename, data, { encoding: 'utf8' } );
-		this.output.templateFile = filename;
+		this.templateFile = filename;
 	}
 
 }

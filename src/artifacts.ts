@@ -8,20 +8,26 @@ import { bold } from 'chalk';
 import { create } from 'archiver';
 import * as glob from 'glob';
 
-import { Task } from '../task';
-import { Artifacts, Artifact, ArtifactFile } from '../types';
+import { Artifacts, Artifact, ArtifactFile } from './types';
+import { Config } from './config';
+import { Logger } from './logger';
 
-export class ArtifactsTask extends Task {
+export class ArtifactsTask {
 
 	private s3?: S3;
 
 	private list?: Artifacts;
 
+	public constructor(
+		private readonly options: Config,
+		private readonly log: Logger
+	) {}
+
 	public run( next: Function ): void {
 		const { stack } = this.options || {};
 		const { region, artifacts } = stack || {};
 		if ( !artifacts ) {
-			next( this.input );
+			next();
 			return;
 		}
 
@@ -40,7 +46,7 @@ export class ArtifactsTask extends Task {
 						this.log.info( '' );
 					}
 
-					next( this.input );
+					next();
 				} )
 				.catch( ( err ) => {
 					if ( this.log ) {
@@ -48,7 +54,7 @@ export class ArtifactsTask extends Task {
 					}
 				} );
 		} else {
-			next( this.input );
+			next();
 		}
 	}
 

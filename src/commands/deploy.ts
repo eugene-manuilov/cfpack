@@ -2,7 +2,8 @@ import { magenta } from 'chalk';
 import { Command, flags } from '@oclif/command';
 import { CloudFormation } from 'aws-sdk';
 
-import { BuildTask, ArtifactsTask } from '../tasks';
+import { BuildTask } from '../build';
+import { ArtifactsTask } from '../artifacts';
 import { Config } from '../config';
 import { Logger } from '../logger';
 import { uuid } from '../utils';
@@ -34,16 +35,12 @@ class DeployCommand extends Command {
 		const logger = new Logger( config.silent, config.verbose );
 
 		const { template } = await new Promise( ( resolve ) => {
-			const builder = new BuildTask();
-			builder.setLogger( logger );
-			builder.setOptions( config );
+			const builder = new BuildTask( config, logger );
 			builder.run( resolve );
 		} );
 
 		await new Promise( ( resolve ) => {
-			const artifacts = new ArtifactsTask();
-			artifacts.setLogger( logger );
-			artifacts.setOptions( config );
+			const artifacts = new ArtifactsTask( config, logger );
 			artifacts.run( resolve );
 		} );
 

@@ -1,6 +1,8 @@
 import { resolve } from 'path';
 
 import { BuildTask } from './build';
+import { Config } from './config';
+import { Logger } from './logger';
 
 describe( 'BuildTask', () => {
 	test.each( [
@@ -22,7 +24,13 @@ describe( 'BuildTask', () => {
 		'ref.yml',
 		// @todo: add template to test !Sub function
 	] )( '::processTemplate --> {%s}', ( template ) => {
-		const task = new BuildTask();
+		const config = new Config( {
+			config: '',
+			silent: true,
+			verbose: false,
+		} );
+
+		const task = new BuildTask( config, new Logger() );
 		const filename = resolve( __dirname, '__fixtures__', template );
 
 		let result;

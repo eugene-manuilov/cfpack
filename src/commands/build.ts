@@ -1,6 +1,6 @@
 import { Command, flags } from '@oclif/command';
 
-import { BuildTask } from '../tasks/build';
+import { BuildTask } from '../build';
 import { Config } from '../config';
 import { Logger } from '../logger';
 
@@ -30,9 +30,7 @@ class BuildCommand extends Command {
 			const config = Config.load( flags );
 			const logger = new Logger( config.silent, config.verbose );
 
-			const builder = new BuildTask();
-			builder.setLogger( logger );
-			builder.setOptions( config );
+			const builder = new BuildTask( config, logger );
 			builder.run( resolve );
 		} );
 	}
