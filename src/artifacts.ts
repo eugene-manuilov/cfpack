@@ -6,7 +6,7 @@ import { S3 } from 'aws-sdk';
 import { PutObjectRequest } from 'aws-sdk/clients/s3';
 import { bold } from 'chalk';
 import { create } from 'archiver';
-import * as glob from 'glob';
+import * as glob from 'globby';
 
 import { Artifacts, Artifact, ArtifactFile } from './types';
 import { Config } from './config';
@@ -124,7 +124,7 @@ export class ArtifactsTask {
 		} );
 	}
 
-	public processArtifact( bucket: string, location: string, args: ArtifactFile ): Promise<void> {
+	public async processArtifact( bucket: string, location: string, args: ArtifactFile ): Promise<void> {
 		const { config = '' } = this.options || {};
 
 		let baseDir: string = args.baseDir || '.';
@@ -134,30 +134,23 @@ export class ArtifactsTask {
 
 		let filepath = args.path || '';
 		if ( !filepath ) {
-			return Promise.resolve();
+			return;
 		}
 
 		if ( baseDir ) {
 			filepath = join( baseDir, filepath );
 		}
 
-		return new Promise( ( resolve ) => {
-			glob( filepath, { absolute: true, stat: true }, ( err, files ) => {
-				if ( err ) {
-					if ( this.log ) {
-						this.log.error( err.toString() );
-					}
-				} else if ( args.compression === 'zip' ) {
-					this.compressAndUploadFiles( bucket, location, baseDir, files )
-						.then( () => resolve() )
-						.catch( () => resolve() );
-				} else {
-					this.uploadFiles( bucket, location, baseDir, files )
-						.then( resolve )
-						.catch( resolve );
-				}
-			} );
-		} );
+		try {
+			const files = await glob( filepath, { absolute: true, stats: true } );
+			if ( args.compression === 'zip' ) {
+				await this.compressAndUploadFiles( bucket, location, baseDir, files );
+			} else {
+				await this.uploadFiles( bucket, location, baseDir, files );
+			}
+		} catch ( err ) {
+			this.log.error( err.toString() );
+		}
 	}
 
 	public async compressAndUploadFiles( bucket: string, location: string, baseDir: string, files: string[] ): Promise<void> {

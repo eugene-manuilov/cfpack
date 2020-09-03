@@ -2,8 +2,6 @@ import { tmpdir } from 'os';
 import { isAbsolute, resolve, join, dirname } from 'path';
 import {
 	existsSync,
-	readdirSync,
-	statSync,
 	readFileSync,
 	mkdtempSync,
 	writeFileSync
@@ -12,10 +10,12 @@ import {
 import { CloudFormation } from 'aws-sdk';
 import { safeLoad, Schema } from 'js-yaml';
 import { magenta } from 'chalk';
+import * as glob from 'globby';
 
 import { createSchema } from './utils';
 import { Logger } from './logger';
 import { Config } from './config';
+import { RunnerData } from './types';
 
 export class BuildTask {
 
@@ -32,82 +32,50 @@ export class BuildTask {
 		private readonly log: Logger
 	) {}
 
-	public run( next: Function ): void {
-		if ( this.log ) {
-			const { entry: entryFolder } = this.options || {};
-			this.log.message( 'Build template file...' );
-			this.log.info( `├─ Looking for templates in the ${ entryFolder } folder...` );
+	public async run(): Promise<RunnerData> {
+		const { entry: entryFolder = process.cwd(), config } = this.options;
+		this.log.message( 'Build template file...' );
+		this.log.info( `├─ Looking for templates in the ${ entryFolder } folder...` );
+
+		const entryPath = isAbsolute( entryFolder )
+			? entryFolder
+			: resolve( dirname( config ), entryFolder );
+
+		if ( !existsSync( entryPath ) ) {
+			this.log.error( 'The entry folder is not found.' );
+			return {};
 		}
 
-		this.findTemplates();
+		const patterns = [
+			join( entryPath, '**/*.yaml' ),
+			join( entryPath, '**/*.yml' ),
+			join( entryPath, '**/*.json' ),
+		];
 
-		if ( this.files.length === 0 ) {
-			return;
+		this.files = await glob( patterns, {
+			absolute: true,
+		} );
+
+		if ( this.files.length > 0 ) {
+			this.log.info( `├─ Found ${ this.files.length } template(s)...` );
+		} else {
+			this.log.info( '└─ Found no templates in the folder...' );
+			return {};
 		}
 
-		if ( this.log ) {
-			this.log.info( '├─ Processing found templates...' );
-		}
-
+		this.log.info( '├─ Processing found templates...' );
 		this.processTemplates();
 
-		if ( this.log ) {
-			this.log.info( '├─ Validating final template...' );
-		}
+		this.log.info( '├─ Validating final template...' );
+		await this.validateFinalTemplate();
 
-		this.validateFinalTemplate( () => {
-			this.saveFinalTemplate();
+		this.saveFinalTemplate();
+		this.log.info( `└─ Final template: ${ magenta( this.templateFile ) }\n` );
 
-			if ( this.log ) {
-				this.log.info( `└─ Final template: ${ magenta( this.templateFile ) }\n` );
-			}
-
-			next( {
-				template: this.template,
-				file: this.templateFile,
-			} );
-		} );
-	}
-
-	public findTemplates(): void {
-		const {
-			entry = '',
-			config = '',
-		} = this.options || {};
-
-		const entryPath = isAbsolute( entry )
-			? entry
-			: resolve( dirname( config ), entry );
-
-		if ( !existsSync( entryPath ) && this.log ) {
-			this.log.error( 'The entry folder is not found.' );
-		}
-
-		const files = this.walkTemplates( entryPath, [] );
-		if ( this.log ) {
-			if ( files.length > 0 ) {
-				this.log.info( `├─ Found ${ files.length } template(s)...` );
-			} else {
-				this.log.info( '└─ Found no templates in the folder...' );
-			}
-		}
-
-		this.files = files;
-	}
-
-	public walkTemplates( dir: string, list: string[] ): string[] {
-		let newlist = [ ...list ];
-
-		readdirSync( dir ).forEach( ( file ) => {
-			const filename = join( dir, file );
-			if ( statSync( filename ).isDirectory() ) {
-				newlist = [ ...newlist, ...this.walkTemplates( filename, list ) ];
-			} else {
-				newlist.push( filename );
-			}
-		} );
-
-		return newlist;
+		return {
+			template: this.template,
+			templateFile: this.templateFile,
+		};
 	}
 
 	public processTemplates(): void {
@@ -150,25 +118,22 @@ export class BuildTask {
 			: safeLoad( content, { schema: this.intrinsicFunctionsSchema } );
 	}
 
-	public validateFinalTemplate( callback: Function ): void {
-		const { stack } = this.options || {};
-		const cloudformation = new CloudFormation( {
-			apiVersion: '2010-05-15',
-			region: stack ? stack.region : 'us-east-1',
-		} );
+	public async validateFinalTemplate(): Promise<void> {
+		try {
+			const { stack } = this.options;
+			const body = JSON.stringify( this.template, undefined, 4 );
+			const cloudformation = new CloudFormation( {
+				apiVersion: '2010-05-15',
+				region: stack ? stack.region : 'us-east-1',
+			} );
 
-		cloudformation.validateTemplate( { TemplateBody: JSON.stringify( this.template, undefined, 4 ) }, ( err ) => {
-			if ( err ) {
-				if ( this.log ) {
-					this.log.error( `├─ ${ err.message }`, false );
-					this.log.error( `└─ RequestId: ${ magenta( err.requestId ) }`, false );
-					this.log.stop();
-				}
-				process.exit( 1 );
-			} else {
-				callback();
-			}
-		} );
+			await cloudformation.validateTemplate( { TemplateBody: body } ).promise();
+		} catch ( err ) {
+			this.log.error( `├─ ${ err.message }`, false );
+			this.log.error( `└─ RequestId: ${ magenta( err.requestId ) }`, false );
+			this.log.stop();
+			process.exit( 1 );
+		}
 	}
 
 	public saveFinalTemplate(): void {

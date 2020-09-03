@@ -28,7 +28,9 @@ class ArtifactsCommand extends Command {
 		return new Promise( ( resolve ) => {
 			const { flags } = this.parse( ArtifactsCommand );
 			const config = Config.load( flags );
+
 			const logger = new Logger( config.silent, config.verbose );
+			logger.start();
 
 			const artifacts = new ArtifactsTask( config, logger );
 			artifacts.run( resolve );

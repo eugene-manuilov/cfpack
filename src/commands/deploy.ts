@@ -32,12 +32,12 @@ class DeployCommand extends Command {
 	public async run(): Promise<void> {
 		const { flags } = this.parse( DeployCommand );
 		const config = Config.load( flags );
-		const logger = new Logger( config.silent, config.verbose );
 
-		const { template } = await new Promise( ( resolve ) => {
-			const builder = new BuildTask( config, logger );
-			builder.run( resolve );
-		} );
+		const logger = new Logger( config.silent, config.verbose );
+		logger.start();
+
+		const builder = new BuildTask( config, logger );
+		const { template } = await builder.run();
 
 		await new Promise( ( resolve ) => {
 			const artifacts = new ArtifactsTask( config, logger );

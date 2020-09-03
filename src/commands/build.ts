@@ -24,15 +24,15 @@ class BuildCommand extends Command {
 		} ),
 	};
 
-	public run(): Promise<void> {
-		return new Promise( ( resolve ) => {
-			const { flags } = this.parse( BuildCommand );
-			const config = Config.load( flags );
-			const logger = new Logger( config.silent, config.verbose );
+	public async run(): Promise<void> {
+		const { flags } = this.parse( BuildCommand );
+		const config = Config.load( flags );
+		const logger = new Logger( config.silent, config.verbose );
+		const builder = new BuildTask( config, logger );
 
-			const builder = new BuildTask( config, logger );
-			builder.run( resolve );
-		} );
+		logger.start();
+		await builder.run();
+		logger.stop();
 	}
 
 }
