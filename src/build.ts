@@ -1,10 +1,8 @@
 import { tmpdir } from 'os';
 import { isAbsolute, resolve, join, dirname } from 'path';
 import {
-	existsSync,
 	readFileSync,
-	mkdtempSync,
-	writeFileSync
+	promises as fs
 } from 'fs';
 
 import { CloudFormation } from 'aws-sdk';
@@ -40,7 +38,8 @@ export class BuildTask {
 			? entryFolder
 			: resolve( dirname( config ), entryFolder );
 
-		if ( !existsSync( entryPath ) ) {
+		const entryPathStats = await fs.stat( entryPath ).catch( () => undefined );
+		if ( !entryPathStats ) {
 			this.log.error( 'The entry folder is not found.' );
 			return {};
 		}
@@ -59,7 +58,7 @@ export class BuildTask {
 		this.log.info( '├─ Validating final template...' );
 		await this.validateFinalTemplate();
 
-		this.saveFinalTemplate();
+		await this.saveFinalTemplate();
 		this.log.info( `└─ Final template: ${ magenta( this.templateFile ) }\n` );
 
 		return {
@@ -98,7 +97,7 @@ export class BuildTask {
 	}
 
 	public processTemplate( file: string ): { [x: string]: string | Date | {} } {
-		const content = readFileSync( file, 'utf8' );
+		const content = readFileSync( file, { encoding: 'utf8' } );
 		return content.trim().charAt( 0 ) === '{'
 			? JSON.parse( content )
 			: safeLoad( content, { schema: this.intrinsicFunctionsSchema } );
@@ -122,7 +121,7 @@ export class BuildTask {
 		}
 	}
 
-	public saveFinalTemplate(): void {
+	public async saveFinalTemplate(): Promise<void> {
 		let {
 			config = '',
 			output: filename,
@@ -130,17 +129,19 @@ export class BuildTask {
 
 		if ( !filename ) {
 			const prefix = join( tmpdir(), 'cfpack-' );
-			const folder = mkdtempSync( prefix );
+			const folder = await fs.mkdtemp( prefix );
 			filename = join( folder, 'template.json' );
 		}
 
-		filename = isAbsolute( filename )
+		this.templateFile = isAbsolute( filename )
 			? filename
 			: resolve( dirname( config ), filename );
 
-		const data = JSON.stringify( this.template, undefined, 4 );
-		writeFileSync( filename, data, { encoding: 'utf8' } );
-		this.templateFile = filename;
+		await fs.writeFile(
+			this.templateFile,
+			JSON.stringify( this.template, undefined, 4 ),
+			{ encoding: 'utf8' }
+		);
 	}
 
 }
