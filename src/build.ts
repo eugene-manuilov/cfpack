@@ -10,9 +10,8 @@ import {
 import { CloudFormation } from 'aws-sdk';
 import { safeLoad, Schema } from 'js-yaml';
 import { magenta } from 'chalk';
-import * as glob from 'globby';
 
-import { createSchema } from './utils';
+import { glob, createSchema } from './utils';
 import { Logger } from './logger';
 import { Config } from './config';
 import { RunnerData } from './types';
@@ -46,16 +45,7 @@ export class BuildTask {
 			return {};
 		}
 
-		const patterns = [
-			join( entryPath, '**/*.yaml' ),
-			join( entryPath, '**/*.yml' ),
-			join( entryPath, '**/*.json' ),
-		];
-
-		this.files = await glob( patterns, {
-			absolute: true,
-		} );
-
+		this.files = await glob( entryPath, '**/*.yaml', '**/*.yml', '**/*.json' );
 		if ( this.files.length > 0 ) {
 			this.log.info( `├─ Found ${ this.files.length } template(s)...` );
 		} else {
@@ -98,13 +88,9 @@ export class BuildTask {
 					}
 				} );
 
-				if ( this.log ) {
-					this.log.info( `├─ Processed ${ file } template...` );
-				}
+				this.log.info( `├─ Processed ${ file } template...` );
 			} catch ( e ) {
-				if ( this.log ) {
-					this.log.info( `├─ Error processing ${ file } template: ${ e.toString().split( '\n' ).join( '\n│  ' ) }` );
-				}
+				this.log.info( `├─ Error processing ${ file } template: ${ e.toString().split( '\n' ).join( '\n│  ' ) }` );
 			}
 		} );
 

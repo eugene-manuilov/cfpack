@@ -6,11 +6,11 @@ import { S3 } from 'aws-sdk';
 import { PutObjectRequest } from 'aws-sdk/clients/s3';
 import { bold } from 'chalk';
 import { create } from 'archiver';
-import * as glob from 'globby';
 
 import { Artifacts, Artifact, ArtifactFile } from './types';
 import { Config } from './config';
 import { Logger } from './logger';
+import { glob } from './utils';
 
 export class ArtifactsTask {
 
@@ -142,7 +142,7 @@ export class ArtifactsTask {
 		}
 
 		try {
-			const files = await glob( filepath, { absolute: true, stats: true } );
+			const files = await glob( filepath );
 			if ( args.compression === 'zip' ) {
 				await this.compressAndUploadFiles( bucket, location, baseDir, files );
 			} else {

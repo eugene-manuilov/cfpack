@@ -1,0 +1,10 @@
+{
+	"Outputs": {
+		"S3BucketArn": {
+			"Description": "The s3 bucket arn code.",
+			"Value": {
+				"Fn::GetAtt": ["S3Bucket", "Arn"]
+			}
+		}
+	}
+}
