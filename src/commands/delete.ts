@@ -34,6 +34,7 @@ class DeleteCommand extends Command {
 		const config = Config.load( flags );
 		const logger = new Logger( config.silent, config.verbose );
 
+		logger.start();
 		logger.message( 'Deleting stack...' );
 
 		const { stack } = config;
