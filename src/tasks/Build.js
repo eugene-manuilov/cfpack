@@ -37,13 +37,13 @@ class BuildTask extends Task {
 	}
 
 	findTemplates() {
-		const { entry } = this.options;
+		const { entry, config } = this.options;
 		const entryPath = path.isAbsolute(entry)
 			? entry
-			: path.resolve(process.cwd(), entry);
+			: path.resolve(path.dirname(config), entry);
 
 		if (!fs.existsSync(entryPath)) {
-			this.log.error('The entry folder is not found.');
+			this.log.error('└─ The entry folder is not found.');
 		}
 
 		const files = this.walkTemplates(entryPath, []);
@@ -143,7 +143,9 @@ class BuildTask extends Task {
 	}
 
 	saveFinalTemplate() {
-		let filename = this.options.output;
+		const { output, config } = this.options;
+
+		let filename = output;
 		if (!filename) {
 			const prefix = path.join(os.tmpdir(), 'cfpack-');
 			const folder = fs.mkdtempSync(prefix);
@@ -152,7 +154,7 @@ class BuildTask extends Task {
 
 		filename = path.isAbsolute(filename)
 			? filename
-			: path.resolve(process.cwd(), filename);
+			: path.resolve(path.dirname(config), filename);
 
 		const data = JSON.stringify(this.output.template, '', 4);
 		fs.writeFileSync(filename, data, { encoding: 'utf8' });
