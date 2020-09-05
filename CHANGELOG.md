@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.4.1 (2020-09-05)
+
+- Updated dependencies to the latest versions.
+
 ## v1.4.0 (2020-06-19)
 
 - Updated dependencies to the latest versions.
