@@ -3,6 +3,7 @@
 ## v1.4.1 (2020-09-05)
 
 - Updated dependencies to the latest versions.
+- Updated package.json to keep eslint and jest configs in separate files.
 - Fixed issues that happened when commands were run outside of a folder with cfpack.config.js file.
 
 ## v1.4.0 (2020-06-19)

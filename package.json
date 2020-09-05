@@ -53,44 +53,5 @@
 		"eslint-plugin-import": "^2.22.0",
 		"jest": "^26.4.2",
 		"lodash": "^4.17.20"
-	},
-	"eslintConfig": {
-		"extends": [
-			"airbnb-base",
-			"plugin:import/errors",
-			"plugin:import/warnings"
-		],
-		"env": {
-			"node": true
-		},
-		"plugins": [
-			"import"
-		],
-		"rules": {
-			"no-plusplus": 0,
-			"no-tabs": 0,
-			"indent": [
-				2,
-				"tab",
-				{
-					"SwitchCase": 1
-				}
-			],
-			"padded-blocks": [
-				2,
-				{
-					"classes": "always"
-				}
-			],
-			"global-require": 0,
-			"import/no-dynamic-require": 0
-		}
-	},
-	"jest": {
-		"testEnvironment": "node",
-		"testMatch": [
-			"<rootDir>/__tests__/**/[^_]*.js"
-		],
-		"verbose": true
 	}
 }
