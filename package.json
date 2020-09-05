@@ -32,10 +32,10 @@
 		"src/"
 	],
 	"scripts": {
+		"cfpack": "./bin/cfpack.js",
 		"test": "jest",
 		"lint": "eslint src commands bin",
-		"lint:fix": "npm run lint --silent -- --fix",
-		"prepublish": "npm run lint --silent"
+		"format": "npm run lint --silent -- --fix"
 	},
 	"dependencies": {
 		"aws-sdk": "^2.747.0",

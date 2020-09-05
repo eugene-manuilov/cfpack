@@ -48,6 +48,10 @@ class Artifacts extends Task {
 	}
 
 	processArtifacts(artifact) {
+		if (!artifact) {
+			return Promise.resolve();
+		}
+
 		const { bucket, files } = artifact;
 		if (!bucket) {
 			this.log.warning('S3 bucket is not defined, skipping artifacts uploading...');
