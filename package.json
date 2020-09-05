@@ -1,6 +1,6 @@
 {
 	"name": "cfpack.js",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "A CLI tool that helps to build CloudFormation template using multiple smaller templates.",
 	"author": "Eugene Manuilov <eugene.manuilov@gmail.com>",
 	"license": "MIT",
@@ -38,20 +38,20 @@
 		"prepublish": "npm run lint --silent"
 	},
 	"dependencies": {
-		"aws-sdk": "^2.700.0",
+		"aws-sdk": "^2.747.0",
 		"chalk": "^3.0.0",
 		"glob": "^7.1.6",
 		"js-yaml": "^3.14.0",
 		"node-native-zip": "^1.1.0",
-		"ora": "^4.0.4",
-		"yargs": "^15.3.1",
+		"ora": "^4.1.1",
+		"yargs": "^15.4.1",
 		"yargs-interactive": "^3.0.0"
 	},
 	"devDependencies": {
-		"eslint": "^7.2.0",
+		"eslint": "^7.8.1",
 		"eslint-config-airbnb-base": "^14.2.0",
-		"eslint-plugin-import": "^2.21.2",
-		"jest": "^26.0.1"
+		"eslint-plugin-import": "^2.22.0",
+		"jest": "^26.4.2"
 	},
 	"eslintConfig": {
 		"extends": [
