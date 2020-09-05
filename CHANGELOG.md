@@ -7,8 +7,13 @@
 - Added jest tests to test different pieces of the core.
 - Added check for updates to inform when a new release is out.
 - Enhanced `init` command to ask more questions and to create a better config file.
-- Fixed incorrect behavior when commands had been executed outside of the directory with config file.
 - Breaking: Updated supported version of Node to be 12+.
+
+## v1.4.1 (2020-09-05)
+
+- Updated dependencies to the latest versions.
+- Updated package.json to keep eslint and jest configs in separate files.
+- Fixed issues that happened when commands were run outside of a folder with cfpack.config.js file.
 
 ## v1.4.0 (2020-06-19)
 
