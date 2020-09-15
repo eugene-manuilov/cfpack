@@ -80,6 +80,7 @@ export function createSchema(): Schema {
 		'Not',
 		'Or',
 		'Split',
+		'Sub',
 	];
 
 	const mapping = [
