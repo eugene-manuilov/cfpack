@@ -17,17 +17,17 @@ jobs:
       - name: Build Image
         run: docker build --tag eugenemanuilov/cfpack --build-arg CFPACK_VERSION ./docker
         env:
-          CFPACK_VERSION: ${{ github.event.release.tag_name }}
+          CFPACK_VERSION: ${{ github.event.release.name }}
       - name: Verify Image
-        run: test "$(docker run --rm eugenemanuilov/cfpack --version)" = "${{ github.event.release.tag_name }}"
+        run: test "$(docker run --rm eugenemanuilov/cfpack --version)" = "${{ github.event.release.name }}"
       - name: Tag Image
         run: |
-          docker tag eugenemanuilov/cfpack eugenemanuilov/cfpack:${{ github.event.release.tag_name }}
-          docker tag eugenemanuilov/cfpack eugenemanuilov/cfpack:${{ github.event.release.tag_name[0] }}
+          docker tag eugenemanuilov/cfpack eugenemanuilov/cfpack:${{ github.event.release.name }}
+          docker tag eugenemanuilov/cfpack eugenemanuilov/cfpack:${{ github.event.release.name[0] }}
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_ACCESS_TOKEN }}" | docker login --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: Push Images
         run: |
           docker push eugenemanuilov/cfpack:latest
-          docker push eugenemanuilov/cfpack:${{ github.event.release.tag_name }}
-          docker push eugenemanuilov/cfpack:${{ github.event.release.tag_name[0] }}
+          docker push eugenemanuilov/cfpack:${{ github.event.release.name }}
+          docker push eugenemanuilov/cfpack:${{ github.event.release.name[0] }}
