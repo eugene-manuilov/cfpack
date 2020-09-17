@@ -17,6 +17,7 @@ describe('BuildTask', () => {
 		'join.yml',
 		'select.yml',
 		'split.yml',
+		'sub.yml',
 		'transform.yml',
 		'ref.yml',
 		// @todo: add template to test !Sub function
