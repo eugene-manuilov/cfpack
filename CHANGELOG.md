@@ -10,6 +10,11 @@
 - Fixed `!Sub` function.
 - Breaking: Updated supported version of Node to be 12+.
 
+## v1.4.2 (2020-09-17)
+
+- Updated dependencies to the latest versions.
+- Fixed issues with !Sub function.
+
 ## v1.4.1 (2020-09-05)
 
 - Updated dependencies to the latest versions.
