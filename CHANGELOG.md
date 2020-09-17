@@ -1,5 +1,10 @@
 # Change Log
 
+## v1.4.2 (2020-09-17)
+
+- Updated dependencies to the latest versions.
+- Fixed issues with !Sub function.
+
 ## v1.4.1 (2020-09-05)
 
 - Updated dependencies to the latest versions.

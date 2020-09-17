@@ -474,6 +474,45 @@ exports[`BuildTask ::processTemplate --> {split.yml} 1`] = `
 }"
 `;
 
+exports[`BuildTask ::processTemplate --> {sub.yml} 1`] = `
+"{
+  \\"Name\\": {
+    \\"Fn::Sub\\": [
+      \\"www.\${Domain}\\",
+      {
+        \\"Domain\\": {
+          \\"Ref\\": \\"RootDomainName\\"
+        }
+      }
+    ]
+  },
+  \\"Arn\\": {
+    \\"Fn::Sub\\": \\"arn:aws:ec2:\${AWS::Region}:\${AWS::AccountId}:vpc/\${vpc}\\"
+  },
+  \\"UserData\\": {
+    \\"Fn::Base64\\": {
+      \\"Fn::Sub\\": \\"#!/bin/bash -xe\\\\nyum update -y aws-cfn-bootstrap\\\\n/opt/aws/bin/cfn-init -v --stack \${AWS::StackName} --resource LaunchConfig --configsets wordpress_install --region \${AWS::Region}\\\\n/opt/aws/bin/cfn-signal -e $? --stack \${AWS::StackName} --resource WebServerGroup --region \${AWS::Region}\\\\n\\"
+    }
+  },
+  \\"StrapiCMSAssetBucket\\": {
+    \\"Type\\": \\"AWS::S3::Bucket\\",
+    \\"DeletionPolicy\\": \\"Retain\\",
+    \\"Properties\\": {
+      \\"BucketName\\": {
+        \\"Fn::Sub\\": [
+          \\"my-test-strapi-assets-\${EnvType}\\",
+          {
+            \\"EnvType\\": {
+              \\"Ref\\": \\"EnvType\\"
+            }
+          }
+        ]
+      }
+    }
+  }
+}"
+`;
+
 exports[`BuildTask ::processTemplate --> {transform.yml} 1`] = `
 "{
   \\"TransformTest\\": {

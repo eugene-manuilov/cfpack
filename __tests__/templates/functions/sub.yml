@@ -1,0 +1,25 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html#w2ab1c25c28c59c11b4
+Name: !Sub
+  - www.${Domain}
+  - { Domain: !Ref RootDomainName }
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html#w2ab1c25c28c59c11b6
+Arn: !Sub 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:vpc/${vpc}'
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html#w2ab1c25c28c59c11b8
+UserData:
+  Fn::Base64:
+    !Sub |
+      #!/bin/bash -xe
+      yum update -y aws-cfn-bootstrap
+      /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource LaunchConfig --configsets wordpress_install --region ${AWS::Region}
+      /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServerGroup --region ${AWS::Region}
+
+# https://github.com/eugene-manuilov/cfpack/issues/12
+StrapiCMSAssetBucket:
+  Type: "AWS::S3::Bucket"
+  DeletionPolicy: Retain
+  Properties:
+    BucketName: !Sub
+      - "my-test-strapi-assets-${EnvType}"
+      - EnvType: !Ref EnvType

@@ -28,6 +28,7 @@ const schema = {
 		'Not',
 		'Or',
 		'Split',
+		'Sub',
 	],
 	mapping: [
 		'Transform',
