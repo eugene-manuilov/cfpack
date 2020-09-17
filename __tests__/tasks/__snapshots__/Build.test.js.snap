@@ -493,6 +493,22 @@ exports[`BuildTask ::processTemplate --> {sub.yml} 1`] = `
     \\"Fn::Base64\\": {
       \\"Fn::Sub\\": \\"#!/bin/bash -xe\\\\nyum update -y aws-cfn-bootstrap\\\\n/opt/aws/bin/cfn-init -v --stack \${AWS::StackName} --resource LaunchConfig --configsets wordpress_install --region \${AWS::Region}\\\\n/opt/aws/bin/cfn-signal -e $? --stack \${AWS::StackName} --resource WebServerGroup --region \${AWS::Region}\\\\n\\"
     }
+  },
+  \\"StrapiCMSAssetBucket\\": {
+    \\"Type\\": \\"AWS::S3::Bucket\\",
+    \\"DeletionPolicy\\": \\"Retain\\",
+    \\"Properties\\": {
+      \\"BucketName\\": {
+        \\"Fn::Sub\\": [
+          \\"my-test-strapi-assets-\${EnvType}\\",
+          {
+            \\"EnvType\\": {
+              \\"Ref\\": \\"EnvType\\"
+            }
+          }
+        ]
+      }
+    }
   }
 }"
 `;
