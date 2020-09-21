@@ -29,10 +29,12 @@ jobs:
         env:
           CFPACK_VERSION: ${{ github.event.release.name }}
         run: |
+          DOCKER_IMAGE=eugenemanuilov/cfpack
           VERSION=${CFPACK_VERSION}
-          TAGS="${{ secrets.DOCKER_IMAGE }}:latest"
-          TAGS="$TAGS,${{ secrets.DOCKER_IMAGE }}:${CFPACK_VERSION}"
-          TAGS="$TAGS,${{ secrets.DOCKER_IMAGE }}:${CFPACK_VERSION%%.*}"
+
+          TAGS="${DOCKER_IMAGE}:latest"
+          TAGS="$TAGS,${DOCKER_IMAGE}:${CFPACK_VERSION}"
+          TAGS="$TAGS,${DOCKER_IMAGE}:${CFPACK_VERSION%%.*}"
 
           echo "::set-output name=version::${VERSION}"
           echo "::set-output name=tags::${TAGS}"
