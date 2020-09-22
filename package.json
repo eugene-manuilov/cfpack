@@ -1,12 +1,12 @@
 {
 	"name": "cfpack.js",
-	"version": "1.4.2",
-	"description": "A CLI tool that helps to build CloudFormation template using multiple smaller templates.",
+	"version": "2.0.0",
+	"description": "A CLI tool that helps to work with big CloudFormation templates by splitting it into multiple smaller templates.",
 	"author": "Eugene Manuilov <eugene.manuilov@gmail.com>",
 	"license": "MIT",
-	"main": "index.js",
+	"main": "lib/index.js",
 	"bin": {
-		"cfpack": "./bin/cfpack.js"
+		"cfpack": "./bin/run"
 	},
 	"homepage": "https://github.com/eugene-manuilov/cfpack#readme",
 	"bugs": {
@@ -17,7 +17,7 @@
 		"url": "git+https://github.com/eugene-manuilov/cfpack.git"
 	},
 	"engines": {
-		"node": ">=8.6.0"
+		"node": ">=12"
 	},
 	"keywords": [
 		"aws",
@@ -25,33 +25,82 @@
 		"cf"
 	],
 	"files": [
-		"*.md",
-		"LICENSE",
-		"bin/",
-		"commands/",
-		"src/"
+		"/bin",
+		"/lib",
+		"/npm-shrinkwrap.json",
+		"/oclif.manifest.json"
 	],
 	"scripts": {
-		"cfpack": "./bin/cfpack.js",
+		"cfpack": "./bin/run",
+		"prebuild": "rimraf lib",
+		"build": "tsc -b",
+		"postbuild": "oclif-dev manifest",
+		"watch": "tsc --watch",
 		"test": "jest",
-		"lint": "eslint src commands bin",
+		"lint": "eslint . --ext .ts --ignore-pattern lib --ignore-pattern node_modules",
 		"format": "npm run lint --silent -- --fix"
 	},
 	"dependencies": {
+		"@oclif/command": "^1.8.0",
+		"@oclif/config": "^1.17.0",
+		"@oclif/errors": "^1.3.3",
+		"@oclif/plugin-autocomplete": "^0.2.0",
+		"@oclif/plugin-help": "^3.2.0",
+		"archiver": "^5.0.2",
 		"aws-sdk": "^2.754.0",
-		"chalk": "^3.0.0",
-		"glob": "^7.1.6",
+		"chalk": "^4.1.0",
+		"globby": "^11.0.1",
+		"inquirer": "^7.3.3",
 		"js-yaml": "^3.14.0",
-		"node-native-zip": "^1.1.0",
-		"ora": "^4.1.1",
-		"yargs": "^15.4.1",
-		"yargs-interactive": "^3.0.0"
+		"mustache": "^4.0.1",
+		"ora": "^5.1.0",
+		"tslib": "^2.0.1",
+		"update-check": "^1.5.4"
 	},
 	"devDependencies": {
+		"@babel/preset-env": "^7.11.5",
+		"@babel/preset-typescript": "^7.10.4",
+		"@oclif/dev-cli": "^1.22.2",
+		"@types/archiver": "^3.1.0",
+		"@types/glob": "^7.1.3",
+		"@types/inquirer": "^7.3.1",
+		"@types/js-yaml": "^3.12.5",
+		"@types/mustache": "^4.0.1",
+		"@types/node": "^12.12.61",
+		"@typescript-eslint/eslint-plugin": "^3.10.1",
+		"@typescript-eslint/parser": "^3.10.1",
 		"eslint": "^7.9.0",
-		"eslint-config-airbnb-base": "^14.2.0",
+		"eslint-config-standard": "^14.1.1",
 		"eslint-plugin-import": "^2.22.0",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-promise": "^4.2.1",
+		"eslint-plugin-standard": "^4.0.1",
+		"husky": "^4.3.0",
 		"jest": "^26.4.2",
-		"lodash": "^4.17.20"
+		"lint-staged": "^10.4.0",
+		"lodash": "^4.17.20",
+		"rimraf": "^3.0.2",
+		"ts-jest": "^26.3.0",
+		"ts-node": "^9.0.0",
+		"typescript": "^3.9.7"
+	},
+	"types": "lib/index.d.ts",
+	"oclif": {
+		"bin": "cfpack",
+		"commands": "./lib/commands",
+		"plugins": [
+			"@oclif/plugin-autocomplete"
+		],
+		"hooks": {
+			"init": "./lib/hooks/init"
+		}
+	},
+	"lint-staged": {
+		"*.ts": "eslint"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
 	}
 }

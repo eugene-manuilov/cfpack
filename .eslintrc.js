@@ -4,21 +4,32 @@ exports.env = {
 	jest: true,
 };
 
+exports.parser = '@typescript-eslint/parser';
+exports.parserOptions = {
+	ecmaVersion: 11,
+	sourceType: 'module',
+};
+
 exports.extends = [
-	'airbnb-base',
-	'plugin:import/errors',
-	'plugin:import/warnings',
+	'standard',
 ];
 
 exports.plugins = [
-	'import',
+	'@typescript-eslint',
 ];
 
 exports.rules = {
-	'no-plusplus': 0,
-	'no-tabs': 0,
-	indent: [2, 'tab', { SwitchCase: 1 }],
-	'padded-blocks': [2, { classes: 'always' }],
-	'global-require': 0,
-	'import/no-dynamic-require': 0,
+	'@typescript-eslint/no-unused-vars': [ 'error' ],
+	'array-bracket-spacing': [ 'error', 'always' ],
+	'comma-dangle': [ 'error', { arrays: 'always-multiline', objects: 'always-multiline' } ],
+	indent: [ 'error', 'tab', { SwitchCase: 1 } ],
+	'no-console': 'error',
+	'no-tabs': 'off',
+	'no-unused-vars': 'off',
+	'no-useless-constructor': 'off',
+	'padded-blocks': [ 'error', { classes: 'always' } ],
+	semi: [ 'error', 'always' ],
+	'space-before-function-paren': [ 'error', { named: 'never' } ],
+	'space-in-parens': [ 'error', 'always' ],
+	'template-curly-spacing': [ 'error', 'always' ],
 };

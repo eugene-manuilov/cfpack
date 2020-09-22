@@ -1,0 +1,4 @@
+Parameters:
+  BucketID:
+    Type: String
+    Description: The bucket name.
