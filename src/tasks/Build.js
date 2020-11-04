@@ -59,7 +59,7 @@ class BuildTask extends Task {
 	walkTemplates(dir, list) {
 		let newlist = [...list];
 
-		fs.readdirSync(dir).forEach((file) => {
+		fs.readdirSync(dir).sort().forEach((file) => {
 			const filename = path.join(dir, file);
 			if (fs.statSync(filename).isDirectory()) {
 				newlist = [...newlist, ...this.walkTemplates(filename, list)];
