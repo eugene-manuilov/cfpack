@@ -4,6 +4,7 @@
 
 - Updated builder to sort templates before merging it.
 - Updated dependencies to the latest versions.
+- Added version update check.
 
 ## [v1.4.2] - 2020-09-17
 
