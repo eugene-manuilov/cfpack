@@ -1,6 +1,8 @@
 # cfpack
 
-[![npm version](https://badge.fury.io/js/cfpack.js.svg)](https://badge.fury.io/js/cfpack.js) 
+[![Version](https://img.shields.io/npm/v/cfpack.js.svg)](https://www.npmjs.com/package/cfpack.js)
+[![Downloads/week](https://img.shields.io/npm/dw/cfpack.js.svg)](https://www.npmjs.com/package/cfpack.js)
+[![License](https://img.shields.io/npm/l/cfpack.js.svg)](https://github.com/eugene-manuilov/cfpack/blob/master/package.json)
 
 A small CLI tool that can help you to deal with huge CloudFormation templates by splitting it into multiple smaller templates. Using this tool you can also build sharable drop-in templates that you can share across your projects.
 
