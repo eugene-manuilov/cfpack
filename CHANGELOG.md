@@ -2,6 +2,10 @@
 
 ## [Unreleased] - TBD
 
+- 
+
+## [v1.5.0] - 2020-11-14
+
 - Updated builder to sort templates before merging it.
 - Updated dependencies to the latest versions.
 - Added version update check.
