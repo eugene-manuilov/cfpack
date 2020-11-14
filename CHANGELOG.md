@@ -56,7 +56,8 @@
 
 The initial release that contains four commands to create init file, build templates, deploy templates and delete current stack.
 
-[Unreleased]: https://github.com/eugene-manuilov/cfpack/compare/v1.4.2...master
+[Unreleased]: https://github.com/eugene-manuilov/cfpack/compare/v1.5.0...master
+[v1.5.0]: https://github.com/eugene-manuilov/cfpack/compare/v1.4.2...v1.5.0
 [v1.4.2]: https://github.com/eugene-manuilov/cfpack/compare/v1.4.1...v1.4.2
 [v1.4.1]: https://github.com/eugene-manuilov/cfpack/compare/v1.4.0...v1.4.1
 [v1.4.0]: https://github.com/eugene-manuilov/cfpack/compare/v1.3.0...v1.4.0
