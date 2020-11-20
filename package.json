@@ -38,7 +38,7 @@
 		"format": "npm run lint --silent -- --fix"
 	},
 	"dependencies": {
-		"aws-sdk": "^2.792.0",
+		"aws-sdk": "^2.796.0",
 		"chalk": "^3.0.0",
 		"glob": "^7.1.6",
 		"js-yaml": "^3.14.0",
