@@ -2,7 +2,7 @@
 
 ## [Unreleased] - TBD
 
-- 
+- Added a workaround for big templates validation which tries not to use JSON formatting when template takes more than 51200 bytes.
 
 ## [v1.5.0] - 2020-11-14
 

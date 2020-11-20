@@ -130,7 +130,14 @@ class BuildTask extends Task {
 			region: stack.region,
 		});
 
-		cloudformation.validateTemplate({ TemplateBody: JSON.stringify(this.output.template, '', 4) }, (err) => {
+		let TemplateBody = JSON.stringify(this.output.template, '', 4);
+
+		// @see https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/CloudFormation.html#validateTemplate-property
+		if (TemplateBody.length > 51200) {
+			TemplateBody = JSON.stringify(this.output.template);
+		}
+
+		cloudformation.validateTemplate({ TemplateBody }, (err) => {
 			if (err) {
 				this.log.error(`├─ ${err.message}`, false);
 				this.log.error(`└─ RequestId: ${chalk.magenta(err.requestId)}`, false);
