@@ -38,7 +38,7 @@
 		"format": "npm run lint --silent -- --fix"
 	},
 	"dependencies": {
-		"aws-sdk": "^2.1005.0",
+		"aws-sdk": "^2.1014.0",
 		"chalk": "^3.0.0",
 		"glob": "^7.2.0",
 		"js-yaml": "^3.14.1",
@@ -49,10 +49,10 @@
 		"yargs-interactive": "^3.0.0"
 	},
 	"devDependencies": {
-		"eslint": "^8.0.0",
+		"eslint": "^8.1.0",
 		"eslint-config-airbnb-base": "^14.2.1",
-		"eslint-plugin-import": "^2.25.1",
-		"jest": "^27.2.5",
+		"eslint-plugin-import": "^2.25.2",
+		"jest": "^27.3.1",
 		"lodash": "^4.17.21"
 	}
 }
