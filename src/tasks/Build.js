@@ -34,7 +34,7 @@ class BuildTask extends Task {
 			next(this.output);
 		};
 
-		if (this.options.force) {
+		if (this.options.validate === false) {
 			this.log.info('├─ Skipping validation process...');
 			saveTemplate();
 		} else {

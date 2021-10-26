@@ -56,16 +56,50 @@ async function bootstrap() {
 	yargs.scriptName('cfpack');
 	yargs.usage('Usage: cfpack <command>');
 
-	yargs.command('init', 'Initializes cfpack config in the current directory.', {}, dispatch);
+	yargs.command(
+		'init',
+		'Initializes cfpack config in the current directory.',
+		{},
+		dispatch
+	);
+
 	yargs.command(
 		'build',
 		'Assembles templates into one CloudFormation template.',
-		(innerYargs) => innerYargs.option('force', { describe: 'Skips validation process', type: 'boolean' }),
+		(innerYargs) => {
+			innerYargs.option('no-validate', {
+				describe: 'Skip template validation process',
+				type: 'boolean',
+			});
+		},
 		dispatch,
 	);
-	yargs.command('deploy', 'Assembles and deploys CloudFormation template.', {}, dispatch);
-	yargs.command('artifacts', 'Uploads artifacts to s3 buckets.', {}, dispatch);
-	yargs.command('delete', 'Deletes CloudFormation stack.', {}, dispatch);
+
+	yargs.command(
+		'deploy',
+		'Assembles and deploys CloudFormation template.',
+		(innerYargs) => {
+			innerYargs.option('no-validate', {
+				describe: 'Skip template validation process',
+				type: 'boolean',
+			});
+		},
+		dispatch
+	);
+
+	yargs.command(
+		'artifacts',
+		'Uploads artifacts to s3 buckets.',
+		{},
+		dispatch
+	);
+
+	yargs.command(
+		'delete',
+		'Deletes CloudFormation stack.',
+		{},
+		dispatch
+	);
 
 	yargs.demandCommand();
 	yargs.parse();

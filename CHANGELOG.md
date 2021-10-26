@@ -3,6 +3,7 @@
 ## [Unreleased] - TBD
 
 - Updated dependencies to the latest versions.
+- Added the ability to skip template validation.
 
 ## [v1.5.1] - 2020-11-20
 
