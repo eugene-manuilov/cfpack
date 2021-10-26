@@ -28,12 +28,19 @@ class BuildTask extends Task {
 		this.log.info('├─ Processing found templates...');
 		this.processTemplates();
 
-		this.log.info('├─ Validating final template...');
-		this.validateFinalTemplate(() => {
+		const saveTemplate = () => {
 			this.saveFinalTemplate();
 			this.log.info(`└─ Final template: ${chalk.magenta(this.output.templateFile)}\n`);
 			next(this.output);
-		});
+		};
+
+		if (this.options.force) {
+			this.log.info('├─ Skipping validation process...');
+			saveTemplate();
+		} else {
+			this.log.info('├─ Validating final template...');
+			this.validateFinalTemplate(saveTemplate);
+		}
 	}
 
 	findTemplates() {
