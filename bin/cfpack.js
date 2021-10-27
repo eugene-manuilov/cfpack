@@ -60,7 +60,7 @@ async function bootstrap() {
 		'init',
 		'Initializes cfpack config in the current directory.',
 		{},
-		dispatch
+		dispatch,
 	);
 
 	yargs.command(
@@ -84,21 +84,21 @@ async function bootstrap() {
 				type: 'boolean',
 			});
 		},
-		dispatch
+		dispatch,
 	);
 
 	yargs.command(
 		'artifacts',
 		'Uploads artifacts to s3 buckets.',
 		{},
-		dispatch
+		dispatch,
 	);
 
 	yargs.command(
 		'delete',
 		'Deletes CloudFormation stack.',
 		{},
-		dispatch
+		dispatch,
 	);
 
 	yargs.demandCommand();
