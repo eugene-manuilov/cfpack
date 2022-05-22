@@ -1,58 +1,58 @@
 {
-	"name": "cfpack.js",
-	"version": "1.5.2",
-	"description": "A CLI tool that helps to build CloudFormation template using multiple smaller templates.",
-	"author": "Eugene Manuilov <eugene.manuilov@gmail.com>",
-	"license": "MIT",
-	"main": "index.js",
-	"bin": {
-		"cfpack": "./bin/cfpack.js"
-	},
-	"homepage": "https://github.com/eugene-manuilov/cfpack#readme",
-	"bugs": {
-		"url": "https://github.com/eugene-manuilov/cfpack/issues"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/eugene-manuilov/cfpack.git"
-	},
-	"engines": {
-		"node": ">=8.6.0"
-	},
-	"keywords": [
-		"aws",
-		"cloudformation",
-		"cf"
-	],
-	"files": [
-		"*.md",
-		"LICENSE",
-		"bin/",
-		"commands/",
-		"src/"
-	],
-	"scripts": {
-		"cfpack": "./bin/cfpack.js",
-		"test": "jest",
-		"lint": "eslint src commands bin",
-		"format": "npm run lint --silent -- --fix"
-	},
-	"dependencies": {
-		"aws-sdk": "^2.1014.0",
-		"chalk": "^3.0.0",
-		"glob": "^7.2.0",
-		"js-yaml": "^3.14.1",
-		"node-native-zip": "^1.1.0",
-		"ora": "^4.1.1",
-		"update-check": "^1.5.4",
-		"yargs": "^15.4.1",
-		"yargs-interactive": "^3.0.0"
-	},
-	"devDependencies": {
-		"eslint": "^8.1.0",
-		"eslint-config-airbnb-base": "^14.2.1",
-		"eslint-plugin-import": "^2.25.2",
-		"jest": "^27.3.1",
-		"lodash": "^4.17.21"
-	}
+ "name": "cfpack.js",
+ "version": "1.5.2",
+ "description": "A CLI tool that helps to build CloudFormation template using multiple smaller templates.",
+ "author": "Eugene Manuilov <eugene.manuilov@gmail.com>",
+ "license": "MIT",
+ "main": "index.js",
+ "bin": {
+  "cfpack": "./bin/cfpack.js"
+ },
+ "homepage": "https://github.com/eugene-manuilov/cfpack#readme",
+ "bugs": {
+  "url": "https://github.com/eugene-manuilov/cfpack/issues"
+ },
+ "repository": {
+  "type": "git",
+  "url": "git+https://github.com/eugene-manuilov/cfpack.git"
+ },
+ "engines": {
+  "node": ">=8.6.0"
+ },
+ "keywords": [
+  "aws",
+  "cloudformation",
+  "cf"
+ ],
+ "files": [
+  "*.md",
+  "LICENSE",
+  "bin/",
+  "commands/",
+  "src/"
+ ],
+ "scripts": {
+  "cfpack": "./bin/cfpack.js",
+  "test": "jest",
+  "lint": "eslint src commands bin",
+  "format": "npm run lint --silent -- --fix"
+ },
+ "dependencies": {
+  "aws-sdk": "^2.1014.0",
+  "chalk": "^4.0.0",
+  "glob": "^7.2.0",
+  "js-yaml": "^3.14.1",
+  "node-native-zip": "^1.1.0",
+  "ora": "^4.1.1",
+  "update-check": "^1.5.4",
+  "yargs": "^15.4.1",
+  "yargs-interactive": "^3.0.0"
+ },
+ "devDependencies": {
+  "eslint": "^8.1.0",
+  "eslint-config-airbnb-base": "^14.2.1",
+  "eslint-plugin-import": "^2.25.2",
+  "jest": "^27.3.1",
+  "lodash": "^4.17.21"
+ }
 }
