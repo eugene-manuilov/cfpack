@@ -34,7 +34,7 @@ class BuildTask extends Task {
 			next(this.output);
 		};
 
-		if (this.options.validate === false) {
+		if (this.options.validate === false || this.options.s3Bucket) {
 			this.log.info('├─ Skipping validation process...');
 			saveTemplate();
 		} else {
@@ -44,10 +44,13 @@ class BuildTask extends Task {
 	}
 
 	findTemplates() {
-		const { entry, config } = this.options;
-		const entryPath = path.isAbsolute(entry)
-			? entry
-			: path.resolve(path.dirname(config), entry);
+		const {
+			entry,
+			config
+		} = this.options;
+		const entryPath = path.isAbsolute(entry) ?
+			entry :
+			path.resolve(path.dirname(config), entry);
 
 		if (!fs.existsSync(entryPath)) {
 			this.log.error('└─ The entry folder is not found.');
@@ -120,9 +123,11 @@ class BuildTask extends Task {
 		const content = fs.readFileSync(file, 'utf8');
 
 		try {
-			return content.trim(0).charAt(0) === '{'
-				? JSON.parse(content)
-				: yaml.safeLoad(content, { schema: intrinsicFunctions });
+			return content.trim(0).charAt(0) === '{' ?
+				JSON.parse(content) :
+				yaml.safeLoad(content, {
+					schema: intrinsicFunctions
+				});
 		} catch (e) {
 			this.lastError = e;
 		}
@@ -131,7 +136,9 @@ class BuildTask extends Task {
 	}
 
 	validateFinalTemplate(callback) {
-		const { stack } = this.options;
+		const {
+			stack
+		} = this.options;
 		const cloudformation = new AWS.CloudFormation({
 			apiVersion: '2010-05-15',
 			region: stack.region,
@@ -144,7 +151,9 @@ class BuildTask extends Task {
 			TemplateBody = JSON.stringify(this.output.template);
 		}
 
-		cloudformation.validateTemplate({ TemplateBody }, (err) => {
+		cloudformation.validateTemplate({
+			TemplateBody
+		}, (err) => {
 			if (err) {
 				this.log.error(`├─ ${err.message}`, false);
 				this.log.error(`└─ RequestId: ${chalk.magenta(err.requestId)}`, false);
@@ -157,7 +166,10 @@ class BuildTask extends Task {
 	}
 
 	saveFinalTemplate() {
-		const { output, config } = this.options;
+		const {
+			output,
+			config
+		} = this.options;
 
 		let filename = output;
 		if (!filename) {
@@ -166,12 +178,14 @@ class BuildTask extends Task {
 			filename = path.join(folder, 'template.json');
 		}
 
-		filename = path.isAbsolute(filename)
-			? filename
-			: path.resolve(path.dirname(config), filename);
+		filename = path.isAbsolute(filename) ?
+			filename :
+			path.resolve(path.dirname(config), filename);
 
 		const data = JSON.stringify(this.output.template, '', 4);
-		fs.writeFileSync(filename, data, { encoding: 'utf8' });
+		fs.writeFileSync(filename, data, {
+			encoding: 'utf8'
+		});
 		this.output.templateFile = filename;
 	}
 
