@@ -25,7 +25,9 @@ class Init extends Task {
 		}
 
 		const options = {
-			interactive: { default: true },
+			interactive: {
+				default: true
+			},
 			stackName: {
 				type: 'input',
 				default: defaults.stackname,
@@ -64,7 +66,9 @@ class Init extends Task {
 
 	static saveConfig(results) {
 		const filename = Init.getConfigFilename();
-		const stream = fs.createWriteStream(filename, { encoding: 'utf8' });
+		const stream = fs.createWriteStream(filename, {
+			encoding: 'utf8'
+		});
 
 		stream.write(`module.exports = {
 	entry: ${JSON.stringify(results.entryFolder)}, // folder with templates
@@ -74,6 +78,8 @@ class Init extends Task {
 	stack: {
 		name: ${JSON.stringify(results.stackName)}, // stack name
 		region: ${JSON.stringify(results.stackRegion)}, // stack region
+		/* uncomment if you want to upload the template file to S3 */
+		// s3Bucket: "your-s3-bucket",
 		params: {
 			/**
 			 * Extra parameters that can be used by API
